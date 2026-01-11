@@ -4,33 +4,6 @@
 
 @section('content')
 
-<style>
-/* Styling untuk modal agar konsisten */
-.modal-content {
-    border-radius: 10px;
-}
-
-.modal-header {
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.modal-footer {
-    border-top: 1px solid #dee2e6;
-    padding: 12px 20px;
-}
-
-/* Styling untuk map */
-.leaflet-container {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-
-/* Styling untuk circle radius */
-.leaflet-interactive {
-    stroke-width: 2;
-}
-</style>
-
 <div class="container">
 
     {{-- ALERT --}}
@@ -42,47 +15,92 @@
     @endif
 
     {{-- BUTTON TAMBAH --}}
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#modalLokasi">
-        + Tambah Lokasi
-    </button>
-
+    
     {{-- DATA LOKASI --}}
-    <div class="row">
-        @forelse ($lokasis as $lokasi)
-            <div class="card shadow-sm h-100">
-                <div class="card-body">
-                    <h5>{{ $lokasi->nama_lokasi }}</h5>
-                    <small>Lat: {{ $lokasi->latitude }}</small><br>
-                    <small>Lng: {{ $lokasi->longitude }}</small><br>
-                    <small>Radius: {{ $lokasi->radius }} m</small><br>
+    {{-- <div class="container py-3"> --}}
+       <div class="card">
+            <div class="card-button mt-2 p-3">
+                <button class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalLokasi">
+                    Tambah Lokasi
+                </button>
+            </div>
 
-                    <span class="badge {{ $lokasi->is_active ? 'bg-success' : 'bg-danger' }}">
-                        {{ $lokasi->is_active ? 'Aktif' : 'Nonaktif' }}
-                    </span>
+            {{-- GRID --}}
+            <div class="card-body">
+                <div class="row g-4">
 
-                    <div class="mt-3 d-flex gap-1">
-                        {{-- EDIT --}}
-                        <button class="btn btn-sm btn-warning"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editLokasi{{ $lokasi->id }}">
-                            ✏️ Edit
-                        </button>
+                    @foreach ($lokasis as $lokasi)
+                        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
 
-                        {{-- HAPUS --}}
-                        <form action="{{ route('lokasi.destroy', $lokasi->id) }}" method="POST"
-                              onsubmit="return confirm('Yakin hapus lokasi ini?')">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-danger">🗑️</button>
-                        </form>
-                    </div>
+                            <div class="card shadow-sm border-0 h-100">
+                                <div class="card-body d-flex flex-column">
+
+                                    {{-- HEADER --}}
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div>
+                                            <h6 class="fw-semibold mb-1">
+                                                {{ $lokasi->nama_lokasi }}
+                                            </h6>
+
+                                            <span class="badge {{ $lokasi->is_active ? 'bg-success' : 'bg-danger' }}">
+                                                {{ $lokasi->is_active ? 'Aktif' : 'Nonaktif' }}
+                                            </span>
+                                        </div>
+
+                                        {{-- TOGGLE --}}
+                                        <form action="{{ route('lokasi.toggle', $lokasi->id) }}" method="POST">
+                                            @csrf
+                                            @method('PATCH')
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input"
+                                                    type="checkbox"
+                                                    onchange="this.form.submit()"
+                                                    style="width:3rem;height:1.5rem"
+                                                    {{ $lokasi->is_active ? 'checked' : '' }}>
+                                            </div>
+                                        </form>
+                                    </div>
+
+                                    {{-- INFO --}}
+                                    <div class="text-muted small mb-4">
+                                        <div>Lat : {{ $lokasi->latitude }}</div>
+                                        <div>Lng : {{ $lokasi->longitude }}</div>
+                                        <div>Radius : {{ $lokasi->radius }} m</div>
+                                    </div>
+
+                                    {{-- ACTION --}}
+                                    <div class="mt-auto d-flex gap-2">
+                                        <button class="btn btn-outline-primary w-100"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#editLokasi{{ $lokasi->id }}">
+                                            Edit
+                                        </button>
+
+                                        <form action="{{ route('lokasi.destroy', $lokasi->id) }}"
+                                            method="POST" class="w-100">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button class="btn btn-outline-danger w-100">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                    @endforeach
+
                 </div>
             </div>
-        @empty
-            <p>Belum ada data lokasi.</p>
-        @endforelse
-    </div>
+        </div>
+
+    {{-- </div> --}}
 </div>
+
 
 {{-- ================= MODAL TAMBAH ================= --}}
 <div class="modal fade" id="modalLokasi" tabindex="-1">
@@ -260,121 +278,121 @@
     }
 
  
-// ================= VARIABLES UNTUK EDIT =================
-let editMaps = {};
-let editMarkers = {};
-let editCircles = {};
+    // ================= VARIABLES UNTUK EDIT =================
+    let editMaps = {};
+    let editMarkers = {};
+    let editCircles = {};
 
-// ================= INITIALIZE EDIT MAP =================
-function initEditMap(lokasiId) {
-    const latInput = document.getElementById('editLatitude' + lokasiId);
-    const lngInput = document.getElementById('editLongitude' + lokasiId);
-    const radiusInput = document.getElementById('editRadius' + lokasiId);
-    const mapContainer = document.getElementById('editMap' + lokasiId);
-    
-    if (!latInput || !lngInput || !radiusInput || !mapContainer) return;
-    
-    const lat = parseFloat(latInput.value) || -5.147665;
-    const lng = parseFloat(lngInput.value) || 119.432732;
-    const radius = parseFloat(radiusInput.value) || 100;
-    
-    // Initialize map
-    const map = L.map(mapContainer).setView([lat, lng], 16);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-    
-    // Add marker
-    const marker = L.marker([lat, lng], { draggable: true }).addTo(map);
-    
-    // Add circle
-    const circle = L.circle([lat, lng], {
-        radius: radius,
-        color: '#0d6efd',
-        fillColor: '#0d6efd',
-        fillOpacity: 0.2
-    }).addTo(map);
-    
-    // Update form when marker is dragged
-    marker.on('dragend', function() {
-        const pos = marker.getLatLng();
-        latInput.value = pos.lat.toFixed(6);
-        lngInput.value = pos.lng.toFixed(6);
-        circle.setLatLng([pos.lat, pos.lng]);
-    });
-    
-    // Update circle radius when input changes
-    radiusInput.addEventListener('input', function() {
-        const newRadius = parseFloat(this.value) || 100;
-        circle.setRadius(newRadius);
-    });
-    
-    // Save references
-    editMaps[lokasiId] = map;
-    editMarkers[lokasiId] = marker;
-    editCircles[lokasiId] = circle;
-    
-    // Fix map size after modal opens
-    setTimeout(() => map.invalidateSize(), 100);
-}
-
-// ================= EVENT LISTENERS FOR EDIT MODALS =================
-@foreach ($lokasis as $lokasi)
-document.getElementById('editLokasi{{ $lokasi->id }}').addEventListener('shown.bs.modal', function() {
-    initEditMap({{ $lokasi->id }});
-});
-
-document.getElementById('editLokasi{{ $lokasi->id }}').addEventListener('hidden.bs.modal', function() {
-    // Cleanup map when modal is closed
-    if (editMaps[{{ $lokasi->id }}]) {
-        editMaps[{{ $lokasi->id }}].remove();
-        delete editMaps[{{ $lokasi->id }}];
-        delete editMarkers[{{ $lokasi->id }}];
-        delete editCircles[{{ $lokasi->id }}];
+    // ================= INITIALIZE EDIT MAP =================
+    function initEditMap(lokasiId) {
+        const latInput = document.getElementById('editLatitude' + lokasiId);
+        const lngInput = document.getElementById('editLongitude' + lokasiId);
+        const radiusInput = document.getElementById('editRadius' + lokasiId);
+        const mapContainer = document.getElementById('editMap' + lokasiId);
+        
+        if (!latInput || !lngInput || !radiusInput || !mapContainer) return;
+        
+        const lat = parseFloat(latInput.value) || -5.147665;
+        const lng = parseFloat(lngInput.value) || 119.432732;
+        const radius = parseFloat(radiusInput.value) || 100;
+        
+        // Initialize map
+        const map = L.map(mapContainer).setView([lat, lng], 16);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        
+        // Add marker
+        const marker = L.marker([lat, lng], { draggable: true }).addTo(map);
+        
+        // Add circle
+        const circle = L.circle([lat, lng], {
+            radius: radius,
+            color: '#0d6efd',
+            fillColor: '#0d6efd',
+            fillOpacity: 0.2
+        }).addTo(map);
+        
+        // Update form when marker is dragged
+        marker.on('dragend', function() {
+            const pos = marker.getLatLng();
+            latInput.value = pos.lat.toFixed(6);
+            lngInput.value = pos.lng.toFixed(6);
+            circle.setLatLng([pos.lat, pos.lng]);
+        });
+        
+        // Update circle radius when input changes
+        radiusInput.addEventListener('input', function() {
+            const newRadius = parseFloat(this.value) || 100;
+            circle.setRadius(newRadius);
+        });
+        
+        // Save references
+        editMaps[lokasiId] = map;
+        editMarkers[lokasiId] = marker;
+        editCircles[lokasiId] = circle;
+        
+        // Fix map size after modal opens
+        setTimeout(() => map.invalidateSize(), 100);
     }
-});
-@endforeach
 
-// ================= GET CURRENT LOCATION FOR EDIT =================
-function getMyLocationEdit(lokasiId) {
-    if (!navigator.geolocation) {
-        alert('Browser tidak mendukung geolocation');
-        return;
-    }
-    
-    navigator.geolocation.getCurrentPosition(
-        function(position) {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            
-            // Update inputs
-            document.getElementById('editLatitude' + lokasiId).value = lat.toFixed(6);
-            document.getElementById('editLongitude' + lokasiId).value = lng.toFixed(6);
-            
-            // Update map if exists
-            if (editMarkers[lokasiId] && editCircles[lokasiId] && editMaps[lokasiId]) {
-                editMarkers[lokasiId].setLatLng([lat, lng]);
-                editCircles[lokasiId].setLatLng([lat, lng]);
-                editMaps[lokasiId].setView([lat, lng], 17);
-            }
-        },
-        function(error) {
-            let message = '';
-            switch(error.code) {
-                case error.PERMISSION_DENIED:
-                    message = 'Izin lokasi ditolak. Silakan aktifkan lokasi di browser.';
-                    break;
-                case error.POSITION_UNAVAILABLE:
-                    message = 'Informasi lokasi tidak tersedia.';
-                    break;
-                case error.TIMEOUT:
-                    message = 'Permintaan lokasi timeout.';
-                    break;
-                default:
-                    message = 'Error tidak diketahui.';
-            }
-            alert(message);
+    // ================= EVENT LISTENERS FOR EDIT MODALS =================
+    @foreach ($lokasis as $lokasi)
+    document.getElementById('editLokasi{{ $lokasi->id }}').addEventListener('shown.bs.modal', function() {
+        initEditMap({{ $lokasi->id }});
+    });
+
+    document.getElementById('editLokasi{{ $lokasi->id }}').addEventListener('hidden.bs.modal', function() {
+        // Cleanup map when modal is closed
+        if (editMaps[{{ $lokasi->id }}]) {
+            editMaps[{{ $lokasi->id }}].remove();
+            delete editMaps[{{ $lokasi->id }}];
+            delete editMarkers[{{ $lokasi->id }}];
+            delete editCircles[{{ $lokasi->id }}];
         }
-    );
-}
+    });
+    @endforeach
+
+    // ================= GET CURRENT LOCATION FOR EDIT =================
+    function getMyLocationEdit(lokasiId) {
+        if (!navigator.geolocation) {
+            alert('Browser tidak mendukung geolocation');
+            return;
+        }
+        
+        navigator.geolocation.getCurrentPosition(
+            function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                // Update inputs
+                document.getElementById('editLatitude' + lokasiId).value = lat.toFixed(6);
+                document.getElementById('editLongitude' + lokasiId).value = lng.toFixed(6);
+                
+                // Update map if exists
+                if (editMarkers[lokasiId] && editCircles[lokasiId] && editMaps[lokasiId]) {
+                    editMarkers[lokasiId].setLatLng([lat, lng]);
+                    editCircles[lokasiId].setLatLng([lat, lng]);
+                    editMaps[lokasiId].setView([lat, lng], 17);
+                }
+            },
+            function(error) {
+                let message = '';
+                switch(error.code) {
+                    case error.PERMISSION_DENIED:
+                        message = 'Izin lokasi ditolak. Silakan aktifkan lokasi di browser.';
+                        break;
+                    case error.POSITION_UNAVAILABLE:
+                        message = 'Informasi lokasi tidak tersedia.';
+                        break;
+                    case error.TIMEOUT:
+                        message = 'Permintaan lokasi timeout.';
+                        break;
+                    default:
+                        message = 'Error tidak diketahui.';
+                }
+                alert(message);
+            }
+        );
+    }
 
 </script>
 @endsection

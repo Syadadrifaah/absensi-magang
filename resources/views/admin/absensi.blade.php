@@ -26,20 +26,12 @@
         <h5 class="mb-0">Absensi & Logbook</h5>
 
         <div class="d-flex gap-2">
-            {{-- FORM ABSENSI --}}
-            <form action="{{ route('absensi.store') }}" method="POST" id="formAbsensi">
-                @csrf
-
-                <input type="hidden" name="latitude" id="latitude">
-                <input type="hidden" name="longitude" id="longitude">
-                <input type="hidden" name="lokasi_id" value="{{ $lokasiAktif->id ?? '' }}">
-
-                <button class="btn btn-success">
-                    <i class="bi bi-fingerprint fs-5"></i> Absensi
-                </button>
-            </form>
+            
 
 
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#absensiModal">
+                Absensi
+            </button>        
             {{-- BUTTON LOGBOOK --}}
             <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLogbook">
                 + Logbook
@@ -47,65 +39,120 @@
         </div>
     </div>
 
-    {{-- ================= TABLE ABSENSI ================= --}}
-    <div class="card shadow-sm mb-4">
-        <div class="card-header fw-bold">Data Absensi</div>
-        <div class="card-body table-responsive">
-            <table class="table table-bordered align-middle">
-                <thead class="table-light text-center">
-                    <tr>
-                        <th>No</th>
-                        <th>Tanggal</th>
-                        <th>Jam</th>
-                        <th>Status</th>
-                        <th>Koordinat</th>
-                        <th>Aksi</th>
 
-                    </tr>
-                </thead>
-                <tbody class="text-center">
-                    @forelse($absensis as $absen)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $absen->tanggal }}</td>
-                            <td>{{ $absen->jam }}</td>
-                            <td>
-                                <span class="badge bg-success">
-                                    {{ ucfirst($absen->status) }}
-                                </span>
-                            </td>
-                            <td>{{ $absen->koordinat_user }}</td>
-                            <td>
-                            
-                            <form action="{{ route('absensi.destroy', $absen->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus absensi ini?')">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-
-                        </tr>
-                        
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center">
-                                Belum ada data absensi
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+    <div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
+        <span>📋 Data Absensi</span>
+        <span class="text-muted small">Total: {{ $absensis->count() }} data</span>
     </div>
+
+    <div class="card-body table-responsive p-0">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light text-center">
+                <tr>
+                    <th>#</th>
+                    <th class="text-start">Pegawai</th>
+                    <th>Tanggal</th>
+                    <th>Masuk</th>
+                    <th>Pulang</th>
+                    <th>Status</th>
+                    <th>Keterangan</th>
+                    <th>Lokasi</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody class="text-center">
+                @forelse($absensis as $absen)
+                <tr>
+                    <td class="text-muted">{{ $loop->iteration }}</td>
+
+                    <td class="text-start">
+                        <div class="fw-semibold">{{ $absen->user->name }}</div>
+                        <small class="text-muted">ID: {{ $absen->user_id }}</small>
+                    </td>
+
+                    <td>{{ \Carbon\Carbon::parse($absen->tanggal)->format('d M Y') }}</td>
+
+                    <td>
+                        {{ $absen->jam_masuk ?? '—' }}
+                    </td>
+
+                    <td>
+                        {{ $absen->jam_pulang ?? '—' }}
+                    </td>
+
+                    {{-- STATUS --}}
+                    <td>
+                        @php
+                            $statusColor = match($absen->status) {
+                                'Hadir' => 'success',
+                                'Alpha' => 'danger',
+                                'Izin'  => 'warning',
+                                'Sakit' => 'info',
+                                default => 'secondary'
+                            };
+                        @endphp
+                        <span class="badge bg-{{ $statusColor }}">
+                            {{ $absen->status }}
+                        </span>
+                    </td>
+
+                    {{-- KETERANGAN --}}
+                    <td>
+                        @if ($absen->keterangan == 'Tepat_Waktu')
+                            <span class="badge bg-success">Tepat Waktu</span>
+                        @elseif ($absen->keterangan == 'Terlambat')
+                            <span class="badge bg-danger text-white">Terlambat</span>
+                        @elseif ($absen->keterangan == 'Pulang_Cepat')
+                            <span class="badge bg-warning">Pulang Cepat</span>
+                        @endif
+                            
+                    </td>
+
+                    {{-- KOORDINAT --}}
+                    <td>
+                        @if($absen->koordinat_masuk)
+                            <small class="text-muted">
+                                {{ Str::limit($absen->koordinat_masuk, 18) }}
+                            </small>
+                        @else
+                            —
+                        @endif
+                    </td>
+
+                    {{-- AKSI --}}
+                    <td>
+                        <form action="{{ route('absensi.destroy', $absen->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Hapus data absensi ini?')">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="9" class="text-center py-4 text-muted">
+                        <i class="fa fa-inbox fa-2x mb-2"></i><br>
+                        Belum ada data absensi
+                    </td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
     {{-- ================= TABLE LOGBOOK ================= --}}
     <div class="card shadow-sm">
         <div class="card-header fw-bold">Data Logbook</div>
         <div class="card-body table-responsive">
             <table class="table table-bordered align-middle">
-                <thead class="table-light">
+                <thead class="table-light text-center">
                     <tr>
                         <th>No</th>
                         <th>Tanggal</th>
@@ -118,9 +165,9 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $logbook->tanggal }}</td>
-                            <td>{{ $logbook->kegiatan }}</td>
+                            <td class="text-justify w-50">{{ $logbook->kegiatan }}</td>
                             <td>
-                                <div class="d-flex gap-2">
+                                <div class="d-flex gap-2 text-center justify-content-center">
                                     {{-- Edit --}}
                                     <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditLogbook{{ $logbook->id }}">
                                         <i class="fa fa-pen"></i>
@@ -229,36 +276,195 @@
     </div>
 </div>
 
+<!-- MODAL -->
+<div class="modal fade" id="absensiModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Absensi</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <video id="video" class="w-100 rounded" autoplay></video>
+                <canvas id="canvas" class="d-none"></canvas>
+
+                <div class="mt-3">
+                    <label>Tanggal</label>
+                    <input type="text" class="form-control"
+                        value="{{ now()->format('d-m-Y') }}" disabled>
+                </div>
+
+                <div class="mt-2">
+                    <label>Koordinat</label>
+                    <input type="text" id="koordinat" class="form-control" disabled>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button onclick="absen('masuk')" class="btn btn-success">
+                    Absen Masuk
+                </button>
+                <button onclick="absen('pulang')" class="btn btn-danger">
+                    Absen Pulang
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
 {{-- ================= SCRIPT GPS ================= --}}
-<script>
-document.getElementById('formAbsensi').addEventListener('submit', function (e) {
-    e.preventDefault();
+{{-- <script>
+    document.addEventListener('DOMContentLoaded', function () {
 
-    if (!navigator.geolocation) {
-        alert('Browser tidak mendukung GPS');
-        return;
-    }
+    let video, canvas, ctx, preview, stream = null;
 
-    navigator.geolocation.getCurrentPosition(
-        function (pos) {
-            document.getElementById('latitude').value = pos.coords.latitude;
-            document.getElementById('longitude').value = pos.coords.longitude;
-            e.target.submit();
-        },
-        function () {
-            alert('Gagal mengambil lokasi. Izinkan akses lokasi.');
+    const modal = document.getElementById('absensiModal');
+
+    /* ===============================
+     * SAAT MODAL DIBUKA → AKTIFKAN KAMERA
+     * =============================== */
+    modal.addEventListener('shown.bs.modal', async function () {
+
+        video = document.getElementById('video');
+        canvas = document.getElementById('canvas');
+        preview = document.getElementById('preview');
+        ctx = canvas.getContext('2d');
+
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: "user" }
+            });
+            video.srcObject = stream;
+            video.play();
+        } catch (err) {
+            alert('Kamera tidak dapat diakses');
         }
-    );
-});
+    });
 
-navigator.geolocation.getCurrentPosition(
-    function(pos){
-        document.getElementById('latitude').value = pos.coords.latitude;
-        document.getElementById('longitude').value = pos.coords.longitude;
-    },
-    function(){
-        alert('Lokasi tidak diizinkan');
+    /* ===============================
+     * SAAT MODAL DITUTUP → MATIKAN KAMERA
+     * =============================== */
+    modal.addEventListener('hidden.bs.modal', function () {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+        preview.classList.add('d-none');
+    });
+
+
+    window.absen = function (tipe) {
+
+        navigator.geolocation.getCurrentPosition(position => {
+
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+
+            const foto = canvas.toDataURL('image/jpeg');
+
+            const formData = new FormData();
+            formData.append('tipe', tipe);
+            formData.append('foto', foto);
+            formData.append('latitude', latitude);
+            formData.append('longitude', longitude);
+            formData.append('_token', '{{ csrf_token() }}');
+
+            fetch('/absensi', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({
+                    tipe: 'masuk',
+                    foto: base64Image,
+                    latitude: lat,
+                    longitude: lng
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+            })
+            .catch(err => {
+                console.error(err);
+            });
+
+
+        }, () => alert('Izin lokasi ditolak'));
+    };
+
+
+});
+</script> --}}
+
+
+<script>
+    let video, canvas, ctx, stream;
+
+    const modal = document.getElementById('absensiModal');
+
+    modal.addEventListener('shown.bs.modal', async () => {
+        video = document.getElementById('video');
+        canvas = document.getElementById('canvas');
+        ctx = canvas.getContext('2d');
+
+        stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+    });
+
+    modal.addEventListener('hidden.bs.modal', () => {
+        if (stream) stream.getTracks().forEach(t => t.stop());
+    });
+
+    function absen(tipe) {
+        navigator.geolocation.getCurrentPosition(pos => {
+
+            const lat = pos.coords.latitude;
+            const lng = pos.coords.longitude;
+
+            document.getElementById('koordinat').value = lat + ',' + lng;
+
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            ctx.drawImage(video, 0, 0);
+
+            const foto = canvas.toDataURL('image/jpeg');
+
+            const formData = new FormData();
+            formData.append('tipe', tipe);
+            formData.append('foto', foto);
+            formData.append('latitude', lat);
+            formData.append('longitude', lng);
+
+            fetch("{{ route('absensi.store') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document
+                        .querySelector('meta[name="csrf-token"]').content
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(res => {
+                alert(res.message);
+                if (res.status) location.reload();
+            })
+            .catch(() => alert('Gagal terhubung ke server'));
+
+        }, () => alert('Izin lokasi ditolak'));
     }
-);
 </script>
+
+
+
 @endsection

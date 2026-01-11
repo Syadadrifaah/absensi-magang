@@ -13,29 +13,38 @@ return new class extends Migration
     {
         //
         Schema::create('tbl_absensi', function (Blueprint $table) {
-    $table->id();
+            $table->id();
 
-    // user_id sementara NULL
-    $table->foreignId('user_id')
-        ->nullable()
-        ->constrained('users')
-        ->nullOnDelete();
+            $table->foreignId('user_id')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
 
-    $table->foreignId('lokasi_id')
-        ->nullable()
-        ->constrained('tbl_lokasi')
-        ->nullOnDelete();
+            $table->foreignId('lokasi_id')
+                ->nullable()
+                ->constrained('tbl_lokasi')
+                ->nullOnDelete();
 
-    $table->date('tanggal');
-    $table->time('jam');
+            $table->date('tanggal');
 
-    $table->enum('status', ['hadir', 'izin', 'sakit'])->default('hadir');
+            // JAM ABSENSI
+            $table->time('jam_masuk')->nullable();
+            $table->time('jam_pulang')->nullable();
 
-    // koordinat sebagai STRING
-    $table->string('koordinat_user')->nullable();
+            $table->enum('status', ['Hadir', 'Alpha', 'Izin', 'Sakit'])->default('Hadir');
+            $table->enum('keterangan', ['Terlambat', 'Pulang_Cepat','Tepat_Waktu'])->default('Tepat_Waktu');
 
-    $table->timestamps();
-});
+            // FOTO ABSENSI
+            $table->string('foto_masuk')->nullable();
+            $table->string('foto_pulang')->nullable();
+
+            // KOORDINAT
+            $table->string('koordinat_masuk')->nullable();
+            $table->string('koordinat_pulang')->nullable();
+
+            $table->timestamps();
+        });
+
 
 
     }

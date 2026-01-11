@@ -2,210 +2,198 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\absensi;
-use App\Models\logbook;
-use auth;
+use Carbon\Carbon;
+use App\Models\Lokasi;
+use App\Models\Absensi;
+
+use App\Models\Logbook;
 use Illuminate\Http\Request;
-use Symfony\Component\Clock\now;
+use Illuminate\Support\Facades\Storage;
 
 class AbsensiController extends Controller
 {
-    //
     public function index()
     {
         return view('admin.absensi', [
-            'absensis' => absensi::orderBy('tanggal','desc')->get(),
-            'logbooks' => logbook::orderBy('tanggal','desc')->get(),
+            'absensis' => Absensi::orderBy('tanggal', 'desc')->get(),
+            'logbooks' => Logbook::orderBy('tanggal', 'desc')->get(),
         ]);
     }
 
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'lokasi_id' => 'nullable|exists:tbl_lokasi,id',
-    //         'latitude'  => 'required',
-    //         'longitude' => 'required',
-    //     ]);
+    public function store(Request $request)
+    {
+        try {
 
-    //     Absensi::create([
-    //         'user_id'        => null, // 🔴 TIDAK PAKAI AUTH
-    //         'lokasi_id'      => $request->lokasi_id ?? null,
-    //         'tanggal'        => now()->toDateString(),
-    //         'jam'            => now()->toTimeString(),
-    //         'status'         => 'hadir',
-    //         'koordinat_user' => "{$request->latitude},{$request->longitude}",
-    //     ]);
+            $request->validate([
+                'tipe' => 'required|in:masuk,pulang',
+                'foto' => 'required',
+                'latitude' => 'required',
+                'longitude' => 'required',
+            ]);
 
-    //     return back()->with('success', 'Absensi berhasil');
-    // }
+            $userId = 1; // DUMMY USER
+            $tanggal = now()->toDateString();
+            $waktu   = now()->format('H:i:s');
 
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'lokasi_id' => 'required|exists:tbl_lokasi,id',
-    //         'latitude'  => 'required|numeric',
-    //         'longitude' => 'required|numeric',
-    //     ]);
+            /* ================= VALIDASI LOKASI ================= */
+            $lokasi = Lokasi::where('is_active', 1)->first();
+            if (!$lokasi) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Lokasi absensi tidak aktif'
+                ], 403);
+            }
 
-    //     // Ambil lokasi kantor
-    //     $lokasi = \App\Models\lokasi::where('id', $request->lokasi_id)
-    //                 ->where('is_active', true)
-    //                 ->first();
+            /* ================= VALIDASI RADIUS ================= */
+            $jarak = $this->haversine(
+                $request->latitude,
+                $request->longitude,
+                $lokasi->latitude,
+                $lokasi->longitude
+            );
 
-    //     if (!$lokasi) {
-    //         return back()->with('error', 'Lokasi absensi tidak ditemukan');
-    //     }
+            if ($jarak > $lokasi->radius) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Anda berada di luar radius absensi'
+                ], 403);
+            }
 
-    //     // Hitung jarak user ke lokasi kantor
-    //     $jarak = $this->hitungJarak(
-    //         $request->latitude,
-    //         $request->longitude,
-    //         $lokasi->latitude,
-    //         $lokasi->longitude
-    //     );
+            /* ================= AMBIL DATA ABSENSI HARI INI ================= */
+            $absensi = Absensi::where('user_id', $userId)
+                ->where('tanggal', $tanggal)
+                ->first();
 
-    //     // Validasi radius
-    //     if ($jarak > $lokasi->radius) {
-    //         return back()->with('error', 'Anda berada di luar lokasi kantor, silakan absen di lokasi kantor');
-    //     }
+            /* ================= ABSEN MASUK ================= */
+            if ($request->tipe === 'masuk') {
 
-    //     // SIMPAN ABSENSI
-    //     Absensi::create([
-    //         'user_id'        => null, // TANPA AUTH
-    //         'lokasi_id'      => $lokasi->id,
-    //         'tanggal'        => now()->toDateString(),
-    //         'jam'            => now()->toTimeString(),
-    //         'status'         => 'hadir',
-    //         'koordinat_user' => "{$request->latitude},{$request->longitude}",
-    //     ]);
+                if ($absensi) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Anda sudah absen masuk hari ini'
+                    ], 422);
+                }
 
-    //     return back()->with('success', 'Absensi berhasil');
-    // }
+                $jamMasukKantor = Carbon::createFromTime(00, 0);
+                $keterangan = now()->gt($jamMasukKantor)
+                    ? 'Terlambat'
+                    : 'Tepat_Waktu';
 
+                $fotoMasuk = $this->saveBase64Image(
+                    $request->foto,
+                    'absensi/masuk'
+                );
 
-    // private function hitungJarak($lat1, $lon1, $lat2, $lon2)
-    // {
-    //     $earthRadius = 6371000; // meter
+                Absensi::create([
+                    'user_id' => $userId,
+                    'lokasi_id' => $lokasi->id,
+                    'tanggal' => $tanggal,
+                    'jam_masuk' => $waktu,
+                    'status' => 'Hadir',
+                    'keterangan' => $keterangan,
+                    'foto_masuk' => $fotoMasuk,
+                    'koordinat_masuk' => $request->latitude . ',' . $request->longitude,
+                ]);
 
-    //     $dLat = deg2rad($lat2 - $lat1);
-    //     $dLon = deg2rad($lon2 - $lon1);
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Absen masuk berhasil'
+                ]);
+            }
 
-    //     $a = sin($dLat / 2) * sin($dLat / 2) +
-    //         cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-    //         sin($dLon / 2) * sin($dLon / 2);
+            /* ================= ABSEN PULANG ================= */
+            if ($request->tipe === 'pulang') {
 
-    //     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+                if (!$absensi) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Anda belum absen masuk'
+                    ], 422);
+                }
 
-    //     return $earthRadius * $c;
-    // }
+                if ($absensi->jam_pulang) {
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Anda sudah absen pulang'
+                    ], 422);
+                }
 
+                $jamPulangStatis = Carbon::createFromTime(02, 0);
 
-    // public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'latitude'  => 'required|numeric',
-    //         'longitude' => 'required|numeric',
-    //     ]);
+                // if (now()->lt($jamPulangStatis)) {
+                //     $absensi->keterangan = 'Pulang_Cepat';
+                // }
+                $keterangan = $absensi->keterangan;
 
-    //     $lokasi = \App\Models\lokasi::where('is_active', 1)->first();
+                if(now()->lt($jamPulangStatis)) {
+                    if($keterangan === 'Terlambat'){
+                        $absensi->keterangan = 'Terlambat & Pulang_Cepat';
+                    }
+                    $absensi->keterangan = 'Pulang_Cepat';
+                }
+                
 
-    //     if (!$lokasi) {
-    //         return back()->with('error', 'Lokasi absensi tidak tersedia');
-    //     }
+                $fotoPulang = $this->saveBase64Image(
+                    $request->foto,
+                    'absensi/pulang'
+                );
 
-    //     $jarak = $this->hitungJarak(
-    //         $request->latitude,
-    //         $request->longitude,
-    //         $lokasi->latitude,
-    //         $lokasi->longitude
-    //     );
+                $absensi->update([
+                    'jam_pulang' => $waktu,
+                    'foto_pulang' => $fotoPulang,
+                    'koordinat_pulang' => $request->latitude . ',' . $request->longitude,
+                    // 'keterangan' => $keterangan,
+                ]);
 
-    //     if ($jarak > $lokasi->radius) {
-    //         return back()->with('error', 'Anda berada di luar lokasi kantor');
-    //     }
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Absen pulang berhasil'
+                ]);
+            }
 
-    //     absensi::create([
-    //         'user_id'        => 1, // sementara
-    //         'lokasi_id'      => $lokasi->id,
-    //         'tanggal'        => now()->format('Y-m-d'),
-    //         'jam'            => now()->format('H:i:s'),
-    //         'status'         => 'hadir',
-    //         'koordinat_user' => $request->latitude . ',' . $request->longitude,
-    //     ]);
-
-    //     return back()->with('success', 'Absensi berhasil');
-    // }
-
-
-public function store(Request $request)
-{
-    // 1. Validasi input GPS
-    $request->validate([
-        'latitude'  => 'required|numeric',
-        'longitude' => 'required|numeric',
-    ]);
-
-    // 2. Ambil lokasi kantor aktif
-    $lokasi = \App\Models\Lokasi::where('is_active', 1)->first();
-
-    if (!$lokasi) {
-        return back()->with('error', 'Lokasi absensi tidak tersedia.');
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
     }
 
-    // 3. Hitung jarak user ke lokasi
-    $jarak = $this->hitungJarak(
-        $request->latitude,
-        $request->longitude,
-        $lokasi->latitude,
-        $lokasi->longitude
-    );
+    /* ================= HAVERSINE ================= */
+    private function haversine($lat1, $lon1, $lat2, $lon2)
+    {
+        $earthRadius = 6371000;
 
-    // 4. Validasi apakah user berada di dalam radius
-    if ($jarak > $lokasi->radius) {
-        return back()->with('error', 'Anda berada di luar lokasi kantor.');
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat / 2) ** 2 +
+            cos(deg2rad($lat1)) *
+            cos(deg2rad($lat2)) *
+            sin($dLon / 2) ** 2;
+
+        return $earthRadius * (2 * atan2(sqrt($a), sqrt(1 - $a)));
     }
 
-    // 5. Simpan data absensi (sementara user_id = 1)
-    \App\Models\Absensi::create([
-        'user_id'        => null, // sementara
-        'lokasi_id'      => $lokasi->id,
-        'tanggal'        => now()->format('Y-m-d'),
-        'jam'            => now()->format('H:i:s'),
-        'status'         => 'hadir',
-        'koordinat_user' => $request->latitude . ',' . $request->longitude,
-    ]);
+    /* ================= SIMPAN FOTO ================= */
+    private function saveBase64Image($base64, $folder)
+    {
+        $image = preg_replace('#^data:image/\w+;base64,#i', '', $base64);
+        $image = base64_decode($image);
 
-    return back()->with('success', 'Absensi berhasil.');
-}
+        $fileName = $folder . '/' . uniqid() . '.jpg';
+        Storage::disk('public')->put($fileName, $image);
 
-/**
- * Fungsi untuk menghitung jarak antara dua titik koordinat (dalam meter)
- */
-private function hitungJarak($lat1, $lon1, $lat2, $lon2)
-{
-    $earthRadius = 6371000; // meter
-    $dLat = deg2rad($lat2 - $lat1);
-    $dLon = deg2rad($lon2 - $lon1);
-
-    $a = sin($dLat / 2) * sin($dLat / 2) +
-         cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-         sin($dLon / 2) * sin($dLon / 2);
-
-    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-
-    return $earthRadius * $c; // jarak dalam meter
-}
-
-public function destroy($id)
-{
-    $absen = Absensi::findOrFail($id);
-    $absen->delete();
-
-    return back()->with('success', 'Absensi berhasil dihapus');
-}
+        return $fileName;
+    }
 
 
 
+    public function destroy($id)
+    {
+        $absen = Absensi::findOrFail($id);
+        $absen->delete();
 
-
+        return back()->with('success', 'Absensi berhasil dihapus');
+    }
 }

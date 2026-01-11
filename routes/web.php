@@ -28,8 +28,8 @@ Route::post('/lokasi-absensi/store', [AdminController::class, 'store'])
 Route::put('/lokasi-absensi/{id}', [AdminController::class, 'update'])
     ->name('lokasi.update');
 
-Route::delete('/lokasi-absensi/{id}', [AdminController::class, 'destroy'])
-    ->name('lokasi.destroy');
+Route::delete('/lokasi-absensi/{id}', [AdminController::class, 'destroy'])->name('lokasi.destroy');
+Route::patch('/lokasi/{id}/toggle', [AdminController::class, 'toggle'])->name('lokasi.toggle');
 
 // Absensi
 Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
@@ -41,19 +41,13 @@ Route::delete('/logbook/{id}', [LogbookController::class, 'destroy'])->name('log
 
 Route::post('/absensi', [AdminController::class, 'Absensi']);
 
-Route::get('/absensi', [AbsensiController::class, 'index'])
-    ->name('absensi.index');
-
-// Simpan absensi (klik tombol sidik jari)
-Route::post('/absensi/store', [AbsensiController::class, 'store'])
-    ->name('absensi.store');
+Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
 
 
-/*
-|--------------------------------------------------------------------------
-| ROUTES LOGBOOK
-|--------------------------------------------------------------------------
-*/
+Route::post('/absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
+
+
+
 
 // Simpan logbook (modal)
 Route::post('/logbook/store', [LogbookController::class, 'store'])
