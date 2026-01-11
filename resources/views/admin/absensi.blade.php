@@ -24,131 +24,118 @@
     {{-- ================= HEADER ACTION ================= --}}
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">Absensi & Logbook</h5>
-
-        <div class="d-flex gap-2">
-            
+    </div>
 
 
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#absensiModal">
-                Absensi
-            </button>        
-            {{-- BUTTON LOGBOOK --}}
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalLogbook">
-                + Logbook
-            </button>
+    {{-- <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
+            <span>📋 Data Absensi</span>
+            <span class="text-muted small">Total: {{ $absensis->count() }} data</span>
         </div>
-    </div>
 
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light text-center">
+                    <tr>
+                        <th>#</th>
+                        <th class="text-start">Pegawai</th>
+                        <th>Tanggal</th>
+                        <th>Masuk</th>
+                        <th>Pulang</th>
+                        <th>Status</th>
+                        <th>Keterangan</th>
+                        <th>Lokasi</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
 
-    <div class="card shadow-sm border-0 mb-4">
-    <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
-        <span>📋 Data Absensi</span>
-        <span class="text-muted small">Total: {{ $absensis->count() }} data</span>
-    </div>
+                <tbody class="text-center">
+                    @forelse($absensis as $absen)
+                    <tr>
+                        <td class="text-muted">{{ $loop->iteration }}</td>
 
-    <div class="card-body table-responsive p-0">
-        <table class="table table-hover align-middle mb-0">
-            <thead class="table-light text-center">
-                <tr>
-                    <th>#</th>
-                    <th class="text-start">Pegawai</th>
-                    <th>Tanggal</th>
-                    <th>Masuk</th>
-                    <th>Pulang</th>
-                    <th>Status</th>
-                    <th>Keterangan</th>
-                    <th>Lokasi</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
+                        <td class="text-start">
+                            <div class="fw-semibold">{{ $absen->user->name }}</div>
+                            <small class="text-muted">ID: {{ $absen->user_id }}</small>
+                        </td>
 
-            <tbody class="text-center">
-                @forelse($absensis as $absen)
-                <tr>
-                    <td class="text-muted">{{ $loop->iteration }}</td>
+                        <td>{{ \Carbon\Carbon::parse($absen->tanggal)->format('d M Y') }}</td>
 
-                    <td class="text-start">
-                        <div class="fw-semibold">{{ $absen->user->name }}</div>
-                        <small class="text-muted">ID: {{ $absen->user_id }}</small>
-                    </td>
+                        <td>
+                            {{ $absen->jam_masuk ?? '—' }}
+                        </td>
 
-                    <td>{{ \Carbon\Carbon::parse($absen->tanggal)->format('d M Y') }}</td>
+                        <td>
+                            {{ $absen->jam_pulang ?? '—' }}
+                        </td>
 
-                    <td>
-                        {{ $absen->jam_masuk ?? '—' }}
-                    </td>
+          
+                        <td>
+                            @php
+                                $statusColor = match($absen->status) {
+                                    'Hadir' => 'success',
+                                    'Alpha' => 'danger',
+                                    'Izin'  => 'warning',
+                                    'Sakit' => 'info',
+                                    default => 'secondary'
+                                };
+                            @endphp
+                            <span class="badge bg-{{ $statusColor }}">
+                                {{ $absen->status }}
+                            </span>
+                        </td>
 
-                    <td>
-                        {{ $absen->jam_pulang ?? '—' }}
-                    </td>
+                   
+                        <td>
+                            @if ($absen->keterangan == 'Tepat_Waktu')
+                                <span class="badge bg-success">Tepat Waktu</span>
+                            @elseif ($absen->keterangan == 'Terlambat')
+                                <span class="badge bg-danger text-white">Terlambat</span>
+                            @elseif ($absen->keterangan == 'Pulang_Cepat')
+                                <span class="badge bg-warning">Pulang Cepat</span>
+                            @endif
+                                
+                        </td>
 
-                    {{-- STATUS --}}
-                    <td>
-                        @php
-                            $statusColor = match($absen->status) {
-                                'Hadir' => 'success',
-                                'Alpha' => 'danger',
-                                'Izin'  => 'warning',
-                                'Sakit' => 'info',
-                                default => 'secondary'
-                            };
-                        @endphp
-                        <span class="badge bg-{{ $statusColor }}">
-                            {{ $absen->status }}
-                        </span>
-                    </td>
+                        
+                        <td>
+                            @if($absen->koordinat_masuk)
+                                <small class="text-muted">
+                                    {{ Str::limit($absen->koordinat_masuk, 18) }}
+                                </small>
+                            @else
+                                —
+                            @endif
+                        </td>
 
-                    {{-- KETERANGAN --}}
-                    <td>
-                        @if ($absen->keterangan == 'Tepat_Waktu')
-                            <span class="badge bg-success">Tepat Waktu</span>
-                        @elseif ($absen->keterangan == 'Terlambat')
-                            <span class="badge bg-danger text-white">Terlambat</span>
-                        @elseif ($absen->keterangan == 'Pulang_Cepat')
-                            <span class="badge bg-warning">Pulang Cepat</span>
-                        @endif
-                            
-                    </td>
-
-                    {{-- KOORDINAT --}}
-                    <td>
-                        @if($absen->koordinat_masuk)
-                            <small class="text-muted">
-                                {{ Str::limit($absen->koordinat_masuk, 18) }}
-                            </small>
-                        @else
-                            —
-                        @endif
-                    </td>
-
-                    {{-- AKSI --}}
-                    <td>
-                        <form action="{{ route('absensi.destroy', $absen->id) }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-sm btn-outline-danger"
-                                onclick="return confirm('Hapus data absensi ini?')">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="9" class="text-center py-4 text-muted">
-                        <i class="fa fa-inbox fa-2x mb-2"></i><br>
-                        Belum ada data absensi
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-</div>
+                        
+                        <td>
+                            <form action="{{ route('absensi.destroy', $absen->id) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-sm btn-outline-danger"
+                                    onclick="return confirm('Hapus data absensi ini?')">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="9" class="text-center py-4 text-muted">
+                            <i class="fa fa-inbox fa-2x mb-2"></i><br>
+                            Belum ada data absensi
+                        </td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div> --}}
 
 
     {{-- ================= TABLE LOGBOOK ================= --}}
-    <div class="card shadow-sm">
+    {{-- <div class="card shadow-sm">
         <div class="card-header fw-bold">Data Logbook</div>
         <div class="card-body table-responsive">
             <table class="table table-bordered align-middle">
@@ -168,12 +155,12 @@
                             <td class="text-justify w-50">{{ $logbook->kegiatan }}</td>
                             <td>
                                 <div class="d-flex gap-2 text-center justify-content-center">
-                                    {{-- Edit --}}
+                                    
                                     <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditLogbook{{ $logbook->id }}">
                                         <i class="fa fa-pen"></i>
                                     </button>
 
-                                    {{-- Hapus --}}
+                                    
                                     <form action="{{ route('logbook.destroy', $logbook->id) }}" method="POST" class="d-inline">
                                         @csrf
                                         @method('DELETE')
@@ -195,7 +182,192 @@
                 </tbody>
             </table>
         </div>
+    </div> --}}
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body">
+
+            {{-- TAB NAV --}}
+            <ul class="nav nav-pills mb-4" id="absensiTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active"
+                            data-bs-toggle="tab"
+                            data-bs-target="#tab-absen"
+                            type="button">
+                        Absensi
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"
+                            data-bs-toggle="tab"
+                            data-bs-target="#tab-data-absensi"
+                            type="button">
+                        Data Absensi
+                    </button>
+                </li>
+
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link"
+                            data-bs-toggle="tab"
+                            data-bs-target="#tab-logbook"
+                            type="button">
+                        Logbook
+                    </button>
+                </li>
+            </ul>
+
+            {{-- TAB CONTENT --}}
+            <div class="tab-content">
+
+                {{-- ================= TAB 1 : ABSENSI ================= --}}
+                <div class="tab-pane fade show active" id="tab-absen">
+                    <div class="text-center py-5">
+                        <h5 class="mb-4">Silakan lakukan absensi hari ini</h5>
+
+                        <div class="d-flex justify-content-center gap-3">
+                           <button class="btn btn-success btn-lg px-5 py-4 mb-3 w-100 d-flex align-items-center justify-content-center gap-3"
+                                    style="font-size:1.2rem"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#absensiModal">
+
+                                <i class="fa-solid fas-camera"></i>
+                                <span>Absen Masuk </span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ================= TAB 2 : DATA ABSENSI ================= --}}
+                <div class="tab-pane fade" id="tab-data-absensi">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-header bg-white fw-semibold d-flex justify-content-between">
+                            <span>Data Absensi</span>
+                            <span class="text-muted small">Total: {{ $absensis->count() }}</span>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light text-center">
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="text-start">Pegawai</th>
+                                        <th>Tanggal</th>
+                                        <th>Masuk</th>
+                                        <th>Pulang</th>
+                                        <th>Status</th>
+                                        <th>Keterangan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="text-center">
+                                    @forelse($absensis as $absen)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+
+                                        <td class="text-start">
+                                            <div class="fw-semibold">{{ $absen->user->name }}</div>
+                                        </td>
+
+                                        <td>{{ \Carbon\Carbon::parse($absen->tanggal)->format('d M Y') }}</td>
+                                        <td>{{ $absen->jam_masuk ?? '—' }}</td>
+                                        <td>{{ $absen->jam_pulang ?? '—' }}</td>
+
+                                        <td>
+                                            <span class="badge bg-success">
+                                                {{ $absen->status }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="badge bg-secondary">
+                                                {{ str_replace('_', ' ', $absen->keterangan) }}
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <form action="{{ route('absensi.destroy', $absen->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-outline-danger"
+                                                    onclick="return confirm('Hapus data ini?')">
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="8" class="text-muted py-4">
+                                            Belum ada data absensi
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- ================= TAB 3 : LOGBOOK ================= --}}
+                <div class="tab-pane fade" id="tab-logbook">
+                    <div class="card shadow-sm border-0">
+
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span>Data Logbook</span>
+                            <button class="btn btn-sm btn-primary"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalTambahLogbook">
+                                Tambah Logbook
+                            </button>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-bordered align-middle mb-0">
+                                <thead class="table-light text-center">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Tanggal</th>
+                                        <th>Kegiatan</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody class="text-center">
+                                    @forelse($logbooks as $logbook)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $logbook->tanggal }}</td>
+                                        <td class="text-start">{{ $logbook->kegiatan }}</td>
+                                        <td>
+                                            <form action="{{ route('logbook.destroy', $logbook->id) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-outline-danger">
+                                                    Hapus
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="4" class="text-muted py-4">
+                                            Belum ada logbook
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
+
 
 </div>
 
@@ -276,9 +448,9 @@
     </div>
 </div>
 
-<!-- MODAL -->
+<!-- MODAL KAMERA-->
 <div class="modal fade" id="absensiModal" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
 
             <div class="modal-header">
@@ -304,11 +476,11 @@
 
             </div>
 
-            <div class="modal-footer">
-                <button onclick="absen('masuk')" class="btn btn-success">
+            <div class="modal-footer text-center justify-content-center gap-3">
+                <button onclick="absen('masuk')" class="btn btn-success btn-lg">
                     Absen Masuk
                 </button>
-                <button onclick="absen('pulang')" class="btn btn-danger">
+                <button onclick="absen('pulang')" class="btn btn-danger btn-lg">
                     Absen Pulang
                 </button>
             </div>
