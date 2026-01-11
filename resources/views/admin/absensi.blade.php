@@ -75,8 +75,8 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#absensiModal">
 
-                                <i class="fa fas-camera"></i>
-                                <span>Absen Masuk </span>
+                                <i class="fas fa-fingerprint fa-3x"></i>
+                                <span><h1>Absensi</h1></span>
                             </button>
                         </div>
                     </div>
