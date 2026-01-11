@@ -119,13 +119,15 @@
                                         <td>{{ $absen->jam_pulang ?? '—' }}</td>
 
                                         <td>
-                                            @php $statusColor = match($absen->status) { 
+                                            @php 
+                                                $statusColor = match($absen->status) { 
                                                 'Hadir' => 'success', 
                                                 'Alpha' => 'danger', 
                                                 'Izin' => 'warning', 
                                                 'Sakit' => 'info', 
                                                 default => 'secondary' }; 
                                             @endphp
+                                            <span class="badge bg-{{ $statusColor }}"> {{ $absen->status }} </span>
                                         </td>
 
                                         <td>
