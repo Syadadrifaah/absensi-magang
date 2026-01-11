@@ -3,186 +3,30 @@
 @section('judul', 'Absensi Karyawan')
 
 @section('content')
+
+<style>
+    .nav-pills .nav-link {
+        color: #005fbe;
+        font-weight: 500;
+        transition: all .2s ease-in-out;
+    }
+
+    .nav-pills .nav-link:hover {
+        background-color: rgba(0, 88, 219, 0.1);
+        color: #0d6efd;
+    }
+
+    .nav-pills .nav-link.active {
+        background-color: #0d6efd;
+        color: #fff;
+    }
+</style>
+
+
 <div class="container">
-
-    {{-- ALERT --}}
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-            <button class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show">
-            {{ session('error') }}
-            <button class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
-
-    {{-- ================= HEADER ACTION ================= --}}
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 class="mb-0">Absensi & Logbook</h5>
     </div>
-
-
-    {{-- <div class="card shadow-sm border-0 mb-4">
-        <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center">
-            <span>📋 Data Absensi</span>
-            <span class="text-muted small">Total: {{ $absensis->count() }} data</span>
-        </div>
-
-        <div class="card-body table-responsive p-0">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light text-center">
-                    <tr>
-                        <th>#</th>
-                        <th class="text-start">Pegawai</th>
-                        <th>Tanggal</th>
-                        <th>Masuk</th>
-                        <th>Pulang</th>
-                        <th>Status</th>
-                        <th>Keterangan</th>
-                        <th>Lokasi</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-
-                <tbody class="text-center">
-                    @forelse($absensis as $absen)
-                    <tr>
-                        <td class="text-muted">{{ $loop->iteration }}</td>
-
-                        <td class="text-start">
-                            <div class="fw-semibold">{{ $absen->user->name }}</div>
-                            <small class="text-muted">ID: {{ $absen->user_id }}</small>
-                        </td>
-
-                        <td>{{ \Carbon\Carbon::parse($absen->tanggal)->format('d M Y') }}</td>
-
-                        <td>
-                            {{ $absen->jam_masuk ?? '—' }}
-                        </td>
-
-                        <td>
-                            {{ $absen->jam_pulang ?? '—' }}
-                        </td>
-
-          
-                        <td>
-                            @php
-                                $statusColor = match($absen->status) {
-                                    'Hadir' => 'success',
-                                    'Alpha' => 'danger',
-                                    'Izin'  => 'warning',
-                                    'Sakit' => 'info',
-                                    default => 'secondary'
-                                };
-                            @endphp
-                            <span class="badge bg-{{ $statusColor }}">
-                                {{ $absen->status }}
-                            </span>
-                        </td>
-
-                   
-                        <td>
-                            @if ($absen->keterangan == 'Tepat_Waktu')
-                                <span class="badge bg-success">Tepat Waktu</span>
-                            @elseif ($absen->keterangan == 'Terlambat')
-                                <span class="badge bg-danger text-white">Terlambat</span>
-                            @elseif ($absen->keterangan == 'Pulang_Cepat')
-                                <span class="badge bg-warning">Pulang Cepat</span>
-                            @endif
-                                
-                        </td>
-
-                        
-                        <td>
-                            @if($absen->koordinat_masuk)
-                                <small class="text-muted">
-                                    {{ Str::limit($absen->koordinat_masuk, 18) }}
-                                </small>
-                            @else
-                                —
-                            @endif
-                        </td>
-
-                        
-                        <td>
-                            <form action="{{ route('absensi.destroy', $absen->id) }}" method="POST">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-outline-danger"
-                                    onclick="return confirm('Hapus data absensi ini?')">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="9" class="text-center py-4 text-muted">
-                            <i class="fa fa-inbox fa-2x mb-2"></i><br>
-                            Belum ada data absensi
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div> --}}
-
-
-    {{-- ================= TABLE LOGBOOK ================= --}}
-    {{-- <div class="card shadow-sm">
-        <div class="card-header fw-bold">Data Logbook</div>
-        <div class="card-body table-responsive">
-            <table class="table table-bordered align-middle">
-                <thead class="table-light text-center">
-                    <tr>
-                        <th>No</th>
-                        <th>Tanggal</th>
-                        <th>Kegiatan</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="text-center">
-                    @forelse($logbooks as $logbook)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $logbook->tanggal }}</td>
-                            <td class="text-justify w-50">{{ $logbook->kegiatan }}</td>
-                            <td>
-                                <div class="d-flex gap-2 text-center justify-content-center">
-                                    
-                                    <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalEditLogbook{{ $logbook->id }}">
-                                        <i class="fa fa-pen"></i>
-                                    </button>
-
-                                    
-                                    <form action="{{ route('logbook.destroy', $logbook->id) }}" method="POST" class="d-inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus logbook ini?')">
-                                            <i class="fa fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="3" class="text-center">
-                                Belum ada data logbook
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div> --}}
 
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">
@@ -231,7 +75,7 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#absensiModal">
 
-                                <i class="fa-solid fas-camera"></i>
+                                <i class="fa fas-camera"></i>
                                 <span>Absen Masuk </span>
                             </button>
                         </div>
@@ -318,7 +162,7 @@
                             <span>Data Logbook</span>
                             <button class="btn btn-sm btn-primary"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#modalTambahLogbook">
+                                    data-bs-target="#modalLogbook">
                                 Tambah Logbook
                             </button>
                         </div>
@@ -368,217 +212,125 @@
         </div>
     </div>
 
-
 </div>
 
-@foreach($logbooks as $logbook)
-<div class="modal fade" id="modalEditLogbook{{ $logbook->id }}" tabindex="-1">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content">
+    @foreach($logbooks as $logbook)
+        <div class="modal fade" id="modalEditLogbook{{ $logbook->id }}" tabindex="-1">
+            <div class="modal-dialog modal-md modal-dialog-centered">
+                <div class="modal-content">
 
-            <form action="{{ route('logbook.update', $logbook->id) }}" method="POST">
-                @csrf
-                @method('PUT')
+                    <form action="{{ route('logbook.update', $logbook->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <div class="modal-header">
+                            <h5 class="modal-title">Edit Logbook</h5>
+                            <button class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Tanggal</label>
+                                <input type="date" name="tanggal" class="form-control" value="{{ $logbook->tanggal }}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Kegiatan</label>
+                                <textarea name="kegiatan" rows="4" class="form-control" required>{{ $logbook->kegiatan }}</textarea>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button class="btn btn-primary">Simpan</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    @endforeach
+
+
+    {{-- ================= MODAL LOGBOOK ================= --}}
+    <div class="modal fade" id="modalLogbook" tabindex="-1">
+        <div class="modal-dialog modal-md modal-dialog-centered">
+            <div class="modal-content">
+
+                <form action="{{ route('logbook.store') }}" method="POST">
+                    @csrf
+
+                    <div class="modal-header">
+                        <h5 class="modal-title">Buat Logbook</h5>
+                        <button class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="mb-3">
+                            <label class="form-label">Tanggal</label>
+                            <input type="date" name="tanggal" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Kegiatan</label>
+                            <textarea name="kegiatan" rows="4" class="form-control" required></textarea>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button class="btn btn-primary">Simpan</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL KAMERA-->
+    <div class="modal fade" id="absensiModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Logbook</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title">Absensi</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label">Tanggal</label>
-                        <input type="date" name="tanggal" class="form-control" value="{{ $logbook->tanggal }}" required>
+
+                    <video id="video" class="w-100 rounded" autoplay></video>
+                    <canvas id="canvas" class="d-none"></canvas>
+
+                    <div class="mt-3">
+                        <label>Tanggal</label>
+                        <input type="text" class="form-control"
+                            value="{{ now()->format('d-m-Y') }}" disabled>
                     </div>
 
-                    <div class="mb-3">
-                        <label class="form-label">Kegiatan</label>
-                        <textarea name="kegiatan" rows="4" class="form-control" required>{{ $logbook->kegiatan }}</textarea>
-                    </div>
-                </div>
-
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button class="btn btn-primary">Simpan</button>
-                </div>
-
-            </form>
-
-        </div>
-    </div>
-</div>
-@endforeach
-
-
-{{-- ================= MODAL LOGBOOK ================= --}}
-<div class="modal fade" id="modalLogbook" tabindex="-1">
-    <div class="modal-dialog modal-md modal-dialog-centered">
-        <div class="modal-content">
-
-            <form action="{{ route('logbook.store') }}" method="POST">
-                @csrf
-
-                <div class="modal-header">
-                    <h5 class="modal-title">Buat Logbook</h5>
-                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-
-                <div class="modal-body">
-
-                    <div class="mb-3">
-                        <label class="form-label">Tanggal</label>
-                        <input type="date" name="tanggal" class="form-control" required>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Kegiatan</label>
-                        <textarea name="kegiatan" rows="4" class="form-control" required></textarea>
+                    <div class="mt-2">
+                        <label>Koordinat</label>
+                        <input type="text" id="koordinat" class="form-control" disabled>
                     </div>
 
                 </div>
 
-                <div class="modal-footer">
-                    <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                    <button class="btn btn-primary">Simpan</button>
-                </div>
-
-            </form>
-
-        </div>
-    </div>
-</div>
-
-<!-- MODAL KAMERA-->
-<div class="modal fade" id="absensiModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title">Absensi</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-
-            <div class="modal-body">
-
-                <video id="video" class="w-100 rounded" autoplay></video>
-                <canvas id="canvas" class="d-none"></canvas>
-
-                <div class="mt-3">
-                    <label>Tanggal</label>
-                    <input type="text" class="form-control"
-                        value="{{ now()->format('d-m-Y') }}" disabled>
-                </div>
-
-                <div class="mt-2">
-                    <label>Koordinat</label>
-                    <input type="text" id="koordinat" class="form-control" disabled>
+                <div class="modal-footer text-center justify-content-center gap-3">
+                    <button onclick="absen('masuk')" class="btn btn-success btn-lg">
+                        Absen Masuk
+                    </button>
+                    <button onclick="absen('pulang')" class="btn btn-danger btn-lg">
+                        Absen Pulang
+                    </button>
                 </div>
 
             </div>
-
-            <div class="modal-footer text-center justify-content-center gap-3">
-                <button onclick="absen('masuk')" class="btn btn-success btn-lg">
-                    Absen Masuk
-                </button>
-                <button onclick="absen('pulang')" class="btn btn-danger btn-lg">
-                    Absen Pulang
-                </button>
-            </div>
-
         </div>
     </div>
-</div>
-
-
-{{-- ================= SCRIPT GPS ================= --}}
-{{-- <script>
-    document.addEventListener('DOMContentLoaded', function () {
-
-    let video, canvas, ctx, preview, stream = null;
-
-    const modal = document.getElementById('absensiModal');
-
-    /* ===============================
-     * SAAT MODAL DIBUKA → AKTIFKAN KAMERA
-     * =============================== */
-    modal.addEventListener('shown.bs.modal', async function () {
-
-        video = document.getElementById('video');
-        canvas = document.getElementById('canvas');
-        preview = document.getElementById('preview');
-        ctx = canvas.getContext('2d');
-
-        try {
-            stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: "user" }
-            });
-            video.srcObject = stream;
-            video.play();
-        } catch (err) {
-            alert('Kamera tidak dapat diakses');
-        }
-    });
-
-    /* ===============================
-     * SAAT MODAL DITUTUP → MATIKAN KAMERA
-     * =============================== */
-    modal.addEventListener('hidden.bs.modal', function () {
-        if (stream) {
-            stream.getTracks().forEach(track => track.stop());
-        }
-        preview.classList.add('d-none');
-    });
-
-
-    window.absen = function (tipe) {
-
-        navigator.geolocation.getCurrentPosition(position => {
-
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            ctx.drawImage(video, 0, 0);
-
-            const foto = canvas.toDataURL('image/jpeg');
-
-            const formData = new FormData();
-            formData.append('tipe', tipe);
-            formData.append('foto', foto);
-            formData.append('latitude', latitude);
-            formData.append('longitude', longitude);
-            formData.append('_token', '{{ csrf_token() }}');
-
-            fetch('/absensi', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: JSON.stringify({
-                    tipe: 'masuk',
-                    foto: base64Image,
-                    latitude: lat,
-                    longitude: lng
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log(data);
-            })
-            .catch(err => {
-                console.error(err);
-            });
-
-
-        }, () => alert('Izin lokasi ditolak'));
-    };
-
-
-});
-</script> --}}
-
 
 <script>
     let video, canvas, ctx, stream;
@@ -628,8 +380,15 @@
             })
             .then(res => res.json())
             .then(res => {
-                alert(res.message);
-                if (res.status) location.reload();
+               showToast(res.message, res.status ? 'success' : 'error');
+
+                // showToast(res.message, res.status ? 'success' : 'error');
+
+                if (res.status) {
+                    setTimeout(() => location.reload(), 1500);
+                }
+
+
             })
             .catch(() => alert('Gagal terhubung ke server'));
 
