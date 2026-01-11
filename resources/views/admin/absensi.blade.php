@@ -119,15 +119,22 @@
                                         <td>{{ $absen->jam_pulang ?? '—' }}</td>
 
                                         <td>
-                                            <span class="badge bg-success">
-                                                {{ $absen->status }}
-                                            </span>
+                                            @php $statusColor = match($absen->status) { 
+                                                'Hadir' => 'success', 
+                                                'Alpha' => 'danger', 
+                                                'Izin' => 'warning', 
+                                                'Sakit' => 'info', 
+                                                default => 'secondary' }; 
+                                            @endphp
                                         </td>
 
                                         <td>
-                                            <span class="badge bg-secondary">
-                                                {{ str_replace('_', ' ', $absen->keterangan) }}
-                                            </span>
+                                            @if ($absen->keterangan == 'Tepat_Waktu') 
+                                                <span class="badge bg-success">Tepat Waktu</span> 
+                                            @elseif ($absen->keterangan == 'Terlambat') 
+                                                <span class="badge bg-danger text-white">Terlambat</span> 
+                                            @elseif ($absen->keterangan == 'Pulang_Cepat') 
+                                                <span class="badge bg-warning">Pulang Cepat</span> @endif
                                         </td>
 
                                         <td>
