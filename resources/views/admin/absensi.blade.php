@@ -136,7 +136,10 @@
                                             @elseif ($absen->keterangan == 'Terlambat') 
                                                 <span class="badge bg-danger text-white">Terlambat</span> 
                                             @elseif ($absen->keterangan == 'Pulang_Cepat') 
-                                                <span class="badge bg-warning">Pulang Cepat</span> @endif
+                                                <span class="badge bg-secondary">Pulang Cepat</span> 
+                                            @elseif ($absen->keterangan == 'Terlambat_Pulang_Cepat') 
+                                                <span class="badge bg-warning">Terlambat & Pulang Cepat</span> 
+                                            @endif
                                         </td>
 
                                         <td>

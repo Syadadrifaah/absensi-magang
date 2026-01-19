@@ -6,16 +6,7 @@
 
 <div class="container">
 
-    {{-- ALERT --}}
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
 
-    {{-- BUTTON TAMBAH --}}
-    
     {{-- DATA LOKASI --}}
     {{-- <div class="container py-3"> --}}
        <div class="card">

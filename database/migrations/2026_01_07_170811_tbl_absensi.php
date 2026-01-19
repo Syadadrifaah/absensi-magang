@@ -32,7 +32,7 @@ return new class extends Migration
             $table->time('jam_pulang')->nullable();
 
             $table->enum('status', ['Hadir', 'Alpha', 'Izin', 'Sakit'])->default('Hadir');
-            $table->enum('keterangan', ['Terlambat', 'Pulang_Cepat','Tepat_Waktu'])->default('Tepat_Waktu');
+            $table->enum('keterangan', ['Terlambat', 'Pulang_Cepat','Tepat_Waktu', 'Terlambat_Pulang_Cepat'])->default('Tepat_Waktu');
 
             // FOTO ABSENSI
             $table->string('foto_masuk')->nullable();

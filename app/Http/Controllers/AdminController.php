@@ -42,38 +42,7 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Lokasi absensi berhasil disimpan');
     }
-
-    //  public function store(Request $request)
-    // {
-    //     $request->validate([
-    //         'nama_lokasi' => 'required',
-    //         'latitude' => 'required|numeric',
-    //         'longitude' => 'required|numeric',
-    //         'radius' => 'required|numeric'
-    //     ]);
-
-    //     Lokasi::create($request->all());
-
-    //     return back()->with('success', 'Lokasi berhasil ditambahkan');
-    // }
-
-    // public function update(Request $request, $id)
-    // {
-    //     Lokasi::findOrFail($id)->update($request->all());
-    //     return back()->with('success', 'Lokasi berhasil diperbarui');
-    // }
-
-//     public function edit($id)
-// {
-//     $lokasi = Lokasi::findOrFail($id);
-    
-//     // Parsing koordinat string ke array
-//     $koordinat = explode(',', $lokasi->koordinat);
-//     $lokasi->latitude = $koordinat[0] ?? '';
-//     $lokasi->longitude = $koordinat[1] ?? '';
-    
-//     return view('lokasi.edit', compact('lokasi'));
-// }
+   //  
 
 public function update(Request $request, $id)
 {
@@ -107,13 +76,13 @@ public function update(Request $request, $id)
         return back()->with('success', 'Lokasi berhasil dihapus');
     }
 
-   public function toggle($id)
+    public function toggle($id)
     {
         $lokasi = Lokasi::findOrFail($id);
         $lokasi->is_active = !$lokasi->is_active;
         $lokasi->save();
 
-        return back()->with('success', 'Status lokasi diperbarui');
+        return back()->with('success', 'Status lokasi absensi diperbarui');
     }
 
 

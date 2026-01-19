@@ -39,11 +39,14 @@
     <link rel="stylesheet" href="{{asset('assets/css/plugins.min.css')}}" />
     <link rel="stylesheet" href="{{asset('assets/css/kaiadmin.min.css')}}" />
     <!-- Font Awesome 6 CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-p8f7Yk2ZQo3hP5EowP0M61xwBvKm0rR1j+dxGV+n2iyt3K6oAwNHK4l5Z18ldD/1p1M1K1fPZ9CtZ0E3d1gU0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-p8f7Yk2ZQo3hP5EowP0M61xwBvKm0rR1j+dxGV+n2iyt3K6oAwNHK4l5Z18ldD/1p1M1K1fPZ9CtZ0E3d1gU0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"> --}}
 
 
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link rel="stylesheet" href="{{asset('assets/css/demo.css')}}" />
+    {{-- <link rel="stylesheet" href="{{asset('assets/css/demo.css')}}" /> --}}
   </head>
   <body>
     <div class="wrapper">
@@ -155,18 +158,18 @@
 
   
 {{-- TOAST CONTAINER --}}
-<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:1080"></div>
+<div class="toast-container position-fixed top-0 end-0 p-3 mt-3" style="z-index:1080"></div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    @if(session('success'))
-        showToast('{{ session('success') }}', 'success');
-    @endif
+  document.addEventListener('DOMContentLoaded', function () {
+      @if(session('success'))
+          showToast('{{ session('success') }}', 'success');
+      @endif
 
-    @if(session('comment'))
-        showToast('{{ session('comment') }}', 'info');
-    @endif
-});
+      @if(session('comment'))
+          showToast('{{ session('comment') }}', 'info');
+      @endif
+  });
 
 function showToast(message, type = 'info') {
     const toastEl = document.createElement('div');
@@ -281,10 +284,10 @@ function showToast(message, type = 'info') {
 
     <!-- jQuery Vector Maps -->
     <script src="{{asset('assets/js/plugin/jsvectormap/jsvectormap.min.js')}}"></script>
-    <script src="{{asset('')}}assets/js/plugin/jsvectormap/world.js"></script>
+    <script src="{{asset('assets/js/plugin/jsvectormap/world.js')}}"></script>
 
     <!-- Sweet Alert -->
-    <script src="{{asset('')}}assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+    <script src="{{asset('assets/js/plugin/sweetalert/sweetalert.min.js')}}"></script>
 
     <!-- Kaiadmin JS -->
     <script src="{{asset('assets/js/kaiadmin.min.js')}}"></script>

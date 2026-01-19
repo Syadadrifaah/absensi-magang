@@ -7,7 +7,7 @@
     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
         <div>
         <h3 class="fw-bold mb-3">Dashboard</h3>
-        <h6 class="op-7 mb-2">Sistem Absensi Pegawai</h6>
+        {{-- <h6 class="op-7 mb-2">Sistem Absensi Pegawai</h6> --}}
         </div>
         <div class="ms-md-auto py-2 py-md-0">
         {{-- <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
@@ -101,4 +101,102 @@
         </div>
     </div>
             
+    <div class="row">
+      <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Pie Chart</div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas
+                        id="pieChart"
+                        style="width: 50%; height: 50%"
+                        ></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Bar Chart</div>
+                </div>
+                <div class="card-body">
+                    <div class="chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     
+
+<script>
+    var pieChart = document.getElementById("pieChart").getContext("2d");
+    var myPieChart = new Chart(pieChart, {
+        type: "pie",
+        data: {
+            labels: ["New Visitors", "Subscribers", "Active Users"],
+            datasets: [{
+                data: [50, 35, 15],
+                backgroundColor: ["#1d7af3", "#f3545d", "#fdaf4b"],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        color: "rgb(154,154,154)",
+                        font: { size: 11 },
+                        usePointStyle: true,
+                        padding: 20
+                    }
+                },
+                tooltip: {
+                    enabled: true
+                }
+            }
+        }
+    });
+
+    var barChart = document.getElementById("barChart").getContext("2d");
+var myBarChart = new Chart(barChart, {
+    type: "bar",
+    data: {
+        labels: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+        datasets: [{
+            label: "Sales",
+            backgroundColor: "rgb(23, 125, 255)",
+            borderColor: "rgb(23, 125, 255)",
+            data: [3,2,9,5,4,6,4,6,7,8,7,4],
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: true,
+                position: "top"
+            },
+            tooltip: {
+                enabled: true
+            }
+        }
+    }
+});
+</script>
+
+
 @endsection

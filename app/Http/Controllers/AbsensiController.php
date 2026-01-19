@@ -35,8 +35,7 @@ class AbsensiController extends Controller
             $tanggal = now()->toDateString();
             $waktu   = now()->format('H:i:s');
 
-            /* ================= VALIDASI LOKASI ================= */
-            $lokasi = Lokasi::where('is_active', 1)->first();
+            $lokasi = Lokasi::where('is_active', true)->first();
             if (!$lokasi) {
                 return response()->json([
                     'status' => false,
@@ -44,7 +43,6 @@ class AbsensiController extends Controller
                 ], 403);
             }
 
-            /* ================= VALIDASI RADIUS ================= */
             $jarak = $this->haversine(
                 $request->latitude,
                 $request->longitude,
@@ -59,12 +57,10 @@ class AbsensiController extends Controller
                 ], 403);
             }
 
-            /* ================= AMBIL DATA ABSENSI HARI INI ================= */
             $absensi = Absensi::where('user_id', $userId)
                 ->where('tanggal', $tanggal)
                 ->first();
-
-            /* ================= ABSEN MASUK ================= */
+            // masuk    
             if ($request->tipe === 'masuk') {
 
                 if ($absensi) {
@@ -74,7 +70,16 @@ class AbsensiController extends Controller
                     ], 422);
                 }
 
-                $jamMasukKantor = Carbon::createFromTime(00, 0);
+                if($absensi->status == 'Izin' || $absensi->status == 'Sakit' || $absensi->status == 'Cuti'){
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Anda tidak dapat absen masuk karena status absensi adalah ' . $absensi->status
+                    ], 422);
+                }
+
+                
+
+                $jamMasukKantor = Carbon::createFromTime(8, 0);
                 $keterangan = now()->gt($jamMasukKantor)
                     ? 'Terlambat'
                     : 'Tepat_Waktu';
@@ -101,7 +106,7 @@ class AbsensiController extends Controller
                 ]);
             }
 
-            /* ================= ABSEN PULANG ================= */
+            //pulang
             if ($request->tipe === 'pulang') {
 
                 if (!$absensi) {
@@ -118,20 +123,24 @@ class AbsensiController extends Controller
                     ], 422);
                 }
 
-                $jamPulangStatis = Carbon::createFromTime(02, 0);
+                $jamPulangStatis = Carbon::createFromTime(17, 0);
 
-                // if (now()->lt($jamPulangStatis)) {
-                //     $absensi->keterangan = 'Pulang_Cepat';
-                // }
                 $keterangan = $absensi->keterangan;
 
-                if(now()->lt($jamPulangStatis)) {
-                    if($keterangan === 'Terlambat'){
-                        $absensi->keterangan = 'Terlambat & Pulang_Cepat';
+                if (now()->lt($jamPulangStatis)) {
+                    if ($keterangan === 'Terlambat') {
+                        $keterangan = 'Terlambat_Pulang_Cepat';
+                    } else {
+                        $keterangan = 'Pulang_Cepat';
                     }
-                    $absensi->keterangan = 'Pulang_Cepat';
                 }
                 
+                if($absensi->status == 'Izin' || $absensi->status == 'Sakit' || $absensi->status == 'Cuti'){
+                    return response()->json([
+                        'status' => false,
+                        'message' => 'Anda tidak dapat absen pulang karena status absensi adalah ' . $absensi->status
+                    ], 422);
+                }
 
                 $fotoPulang = $this->saveBase64Image(
                     $request->foto,
@@ -142,7 +151,7 @@ class AbsensiController extends Controller
                     'jam_pulang' => $waktu,
                     'foto_pulang' => $fotoPulang,
                     'koordinat_pulang' => $request->latitude . ',' . $request->longitude,
-                    // 'keterangan' => $keterangan,
+                    'keterangan' => $keterangan,
                 ]);
 
                 return response()->json([
@@ -195,5 +204,56 @@ class AbsensiController extends Controller
         $absen->delete();
 
         return back()->with('success', 'Absensi berhasil dihapus');
+    }
+
+    public function dataabsensi(Request $request)
+    {
+         $query = Absensi::with(['user']);
+
+        // 🔍 SEARCH: nama & email user
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+      
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('tanggal', [
+                $request->start_date,
+                $request->end_date
+            ]);
+        }
+
+        $absensis = $query
+            ->orderByDesc('tanggal')
+            ->paginate(10)
+            ->withQueryString();
+
+
+        return view('data_absensi.index', compact('absensis'));
+    }
+
+    public function updatedataabsensi(Request $request, $id)
+    {
+        $request->validate([
+            'jam_masuk' => 'nullable',
+            'jam_pulang' => 'nullable',
+            'status' => 'required',
+            'keterangan' => 'nullable'
+        ]);
+
+        $absensi = Absensi::findOrFail($id);
+        $absensi->update($request->only([
+            'jam_masuk',
+            'jam_pulang',
+            'status',
+            'keterangan'
+        ]));
+
+        return back()->with('success', 'Data absensi berhasil diperbarui');
     }
 }
