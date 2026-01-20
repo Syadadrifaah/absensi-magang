@@ -60,7 +60,17 @@ class AbsensiController extends Controller
             $absensi = Absensi::where('user_id', $userId)
                 ->where('tanggal', $tanggal)
                 ->first();
-            // masuk    
+            //validasi sudah absen   
+            
+            if($absensi && in_array($absensi->status, ['Izin', 'Sakit', 'Cuti'])){
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Anda tidak dapat melakukan absensi karena status absensi adalah ' . $absensi->status
+                ], 422);
+            }
+
+
+            //masuk
             if ($request->tipe === 'masuk') {
 
                 if ($absensi) {
@@ -69,15 +79,6 @@ class AbsensiController extends Controller
                         'message' => 'Anda sudah absen masuk hari ini'
                     ], 422);
                 }
-
-                if($absensi->status == 'Izin' || $absensi->status == 'Sakit' || $absensi->status == 'Cuti'){
-                    return response()->json([
-                        'status' => false,
-                        'message' => 'Anda tidak dapat absen masuk karena status absensi adalah ' . $absensi->status
-                    ], 422);
-                }
-
-                
 
                 $jamMasukKantor = Carbon::createFromTime(8, 0);
                 $keterangan = now()->gt($jamMasukKantor)

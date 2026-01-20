@@ -112,29 +112,18 @@
 </div>
 
 {{-- ================= MODAL INPUT IZIN ================= --}}
-<div class="modal fade"
-     id="modalIzin"
-     tabindex="-1"
-     aria-hidden="true">
 
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <form method="POST"
-              action="{{ route('izin.store') }}"
-              enctype="multipart/form-data"
-              class="modal-content">
 
+<div class="modal fade" id="modalIzin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Tambah Data Izin Pegawai</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+            <form method="POST" action="{{ route('izin.store') }}" enctype="multipart/form-data">
             @csrf
-
-            {{-- HEADER --}}
-            <div class="modal-header">
-                <h5 class="modal-title">Tambah Izin Pegawai</h5>
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"></button>
-            </div>
-
-            {{-- BODY --}}
-            <div class="modal-body">
+             <div class="modal-body">
                 <div class="row g-3">
 
                     <div class="col-md-6">
@@ -167,7 +156,7 @@
 
                     <div class="col-md-6">
                         <label class="form-label">Jenis Izin</label>
-                        <select name="jenis" class="form-select">
+                        <select name="jenis" class="form-select" id="jenisIzin">
                             <option value="Izin">Izin</option>
                             <option value="Sakit">Sakit</option>
                         </select>
@@ -181,12 +170,12 @@
                                placeholder="Opsional">
                     </div>
 
-                    <div class="col-md-12 d-none" id="suratArea">
+                    <div class="col-md-12 d-none" id="suratWrapper">
                         <label class="form-label">Surat Keterangan (PDF)</label>
                         <input type="file"
                                name="surat"
                                class="form-control"
-                               accept="application/pdf" required>
+                               accept="application/pdf">
                         <small class="text-muted">
                             Wajib jika izin lebih dari 3 hari
                         </small>
@@ -194,22 +183,13 @@
 
                 </div>
             </div>
-
-            {{-- FOOTER --}}
-            <div class="modal-footer">
-                <button type="button"
-                        class="btn btn-light"
-                        data-bs-dismiss="modal">
-                    Batal
-                </button>
-                <button type="submit"
-                        class="btn btn-primary">
-                    Simpan
-                </button>
-            </div>
-
-        </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+      </div>
+            </form>
     </div>
+  </div>
 </div>
 
 {{-- modal edit izin --}}
@@ -329,9 +309,11 @@
 
         // 👉 TAMPIL JIKA LEBIH DARI 3 HARI
         if (hari > 3) {
-            suratArea.classList.remove('d-none');
+            suratWrapper.classList.remove('d-none');
+            suratArea.required = true;
         } else {
-            suratArea.classList.add('d-none');
+            suratWrapper.classList.add('d-none');
+            suratArea.required = false;
         }
     }
 
