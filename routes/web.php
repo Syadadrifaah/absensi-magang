@@ -7,16 +7,13 @@ use App\Http\Controllers\IzinController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\KategoriEmployeeController;
-
-
-
-
-
+use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -94,13 +91,27 @@ Route::post('/users/store', [UserController::class, 'store'])->name('users.store
 
 // update user
 Route::put('/users/update/{user}', [UserController::class, 'update'])->name('users.update');
-
 // hapus user
 Route::delete('/users/delete/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
+Route::put('/activity-logs/update/{log}', [ActivityLogController::class, 'update'])->name('activity-logs.update');
 
 
-Route::get('/activity-logs', [ActivityLogController::class, 'index'])
-    ->name('activity-logs.index');
 
-Route::put('/activity-logs/update/{log}', [ActivityLogController::class, 'update'])
-    ->name('activity-logs.update');
+Route::get('/laporan', [ReportController::class, 'index'])->name('laporan.index');
+
+
+Route::prefix('laporan')->group(function () {
+
+    Route::get('/', [ReportController::class, 'index'])
+        ->name('laporan.index');
+
+    Route::get('/pegawai', [ReportController::class, 'pegawai'])
+        ->name('laporan.pegawai');
+
+    Route::get('/absensi-harian', [ReportController::class, 'absensiHarian'])
+        ->name('laporan.absensi.harian');
+
+    Route::get('/absensi-bulanan', [ReportController::class, 'absensiBulanan'])
+        ->name('laporan.absensi.bulanan');
+});

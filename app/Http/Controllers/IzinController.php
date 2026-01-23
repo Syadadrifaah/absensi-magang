@@ -114,7 +114,7 @@ class IzinController extends Controller
                     ],
                     [
                         'status' => $request->jenis,
-                        // 'keterangan' => 'Izin',
+                        'keterangan' => 'Tepat_Waktu',
                         'jam_masuk' => null,
                         'jam_pulang' => null
                     ]
@@ -165,12 +165,6 @@ class IzinController extends Controller
             'jenis'           => $request->jenis,
             'keterangan'      => $request->keterangan,
         ]);
-
-        /**
-         * ===============================
-         * LOGIKA ABSENSI
-         * ===============================
-         */
 
         // 🔹 KASUS 1 HARI → UPDATE SAJA
         if ($oldDays == 1 && $newDays == 1) {

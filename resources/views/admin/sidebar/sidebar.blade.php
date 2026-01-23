@@ -4,7 +4,7 @@
           <div class="logo-header" data-background-color="dark">
             <a href="#" class="logo">
               <img
-                src="{{ asset('assets/img/kaiadmin/Lambang_kota_kendari.png') }}"
+                src="{{ asset('assets/img/kaiadmin/logo-bpom.png') }}"
                 alt="navbar brand"
                 class="navbar-brand"
                 height="50"
@@ -79,7 +79,18 @@
                     <a href="{{route('absensi.index')}}">
                     <i class="fas fa-user"></i>
                     <p>Absensi</p>
-                    {{-- <span class="badge badge-secondary">1</span> --}}
+                    </a>
+                </li>
+                 <li class="nav-section ">
+                  <span class="sidebar-mini-icon">
+                    <i class="fa fa-ellipsis-h"></i>
+                  </span>
+                  <h4 class="text-section">Laporan</h4>
+              </li>
+              <li class="nav-item {{ Request::is('laporan') ? 'active' : '' }}">
+                    <a href="{{ route('laporan.index') }}">
+                    <i class="fas fa-file-alt"></i>
+                    <p>Laporan</p>
                     </a>
                 </li>
             <li class="nav-section">

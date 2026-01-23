@@ -10,7 +10,7 @@
 
     <link
       rel="icon"
-      href="{{asset('assets/img/kaiadmin/Lambang_kota_kendari.png')}}"
+      href="{{asset('assets/img/kaiadmin/Logo-bpom.png')}}"
       type="image/x-icon"
     />
 

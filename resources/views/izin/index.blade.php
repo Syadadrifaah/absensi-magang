@@ -18,13 +18,7 @@
         </button>
     </div>
 
-    {{-- ALERT --}}
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show">
-            {{ session('success') }}
-            <button class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
+    
 
     {{-- CARD TABLE --}}
     <div class="card border-0 shadow-sm">
@@ -112,8 +106,6 @@
 </div>
 
 {{-- ================= MODAL INPUT IZIN ================= --}}
-
-
 <div class="modal fade" id="modalIzin" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
