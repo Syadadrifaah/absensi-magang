@@ -43,6 +43,7 @@ Route::middleware(['auth','role:Admin'])->group(function () {
 
     Route::delete('/izin/delete/{id}', [IzinController::class, 'destroy'])->name('izin.delete');
 
+    
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
 
     // Simpan role baru
@@ -53,8 +54,6 @@ Route::middleware(['auth','role:Admin'])->group(function () {
 
     // Hapus role
     Route::delete('/roles/delete/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
-
-
 
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
@@ -158,6 +157,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     // // Route::get('/employees/update/{id}', [EmployeeController::class, 'edit'])->name('employees.edit');
     // Route::put('/employees/update/{id}', [EmployeeController::class, 'update'])->name('employees.update');
     // Route::delete('/employees/delete/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+
 
 
 
