@@ -66,7 +66,7 @@ class EmployeeController extends Controller
 
         // 📄 PAGINATION (PAKAI QUERY YANG SAMA)
         $employees = $query
-            ->orderBy('name')
+            ->orderBy('position_id','desc')
             ->paginate(10)
             ->withQueryString();
 
@@ -86,7 +86,7 @@ class EmployeeController extends Controller
                 'user_id' => 'nullable|unique:employees,user_id',
                 'nip' => 'required|unique:employees,nip',
                 'name' => 'required',
-                'position' => 'required',
+                'position_id' => 'required',
                 'department' => 'required',
                 'email' => 'required|email',
                 'phone' => 'required',
@@ -97,7 +97,7 @@ class EmployeeController extends Controller
                     'nip.required' => 'NIP wajib diisi.',
                     'nip.unique' => 'NIP sudah terdaftar.',
                     'name.required' => 'Nama pegawai wajib diisi.',
-                    'position.required' => 'Posisi wajib diisi.',
+                    'position_id.required' => 'Posisi wajib diisi.',
                     'department.required' => 'Departemen wajib diisi.',
                     'email.required' => 'Email wajib diisi.',
                     'email.email' => 'Format email tidak valid.',
@@ -111,7 +111,7 @@ class EmployeeController extends Controller
                 'kategori_id' => $request->kategori_id,
                 'nip' => $request->nip,
                 'name' => $request->name,
-                'position' => $request->position,
+                'position_id' => $request->position_id,
                 'department' => $request->department,
                 'email' => $request->email,
                 'phone' => $request->phone,
@@ -133,7 +133,7 @@ class EmployeeController extends Controller
                 'user_id' => 'nullable|unique:employees,user_id,' . $employee->id,
                 'nip' => 'required|unique:employees,nip,' . $employee->id,
                 'name' => 'required',
-                'position' => 'required',
+                'position_id' => 'required',
                 'department' => 'required',
                 'email' => 'required|email',
                 'phone' => 'required',
@@ -145,7 +145,7 @@ class EmployeeController extends Controller
                 'kategori_id' => $request->kategori_id,
                 'nip' => $request->nip,
                 'name' => $request->name,
-                'position' => $request->position,
+                'position_id' => $request->position_id,
                 'department' => $request->department,
                 'email' => $request->email,
                 'phone' => $request->phone,

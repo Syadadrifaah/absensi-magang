@@ -4,6 +4,8 @@
 
 @section('content')
 
+<?php $positions = \App\Models\Position::orderBy('level')->get(); ?>
+
 <style>
     .pagination .page-link {
         border-radius: 0 !important;
@@ -51,10 +53,10 @@
                 </div>
             </div>
 
-            {{-- 👉 KANAN : FILTER + TAMBAH --}}
+            {{-- KANAN : FILTER + TAMBAH --}}
             <div class="d-flex align-items-center gap-2">
 
-                {{-- 🎯 FILTER ROLE --}}
+                {{--  FILTER ROLE --}}
                 <div class="dropdown">
                     <button class="btn btn-sm btn-outline-secondary dropdown-toggle"
                             type="button"
@@ -116,7 +118,7 @@
                                 <div class="fw-semibold">{{ $e->name }}</div>
                                 <small class="text-muted">{{ $e->email }}</small><br>
                                 <span class="badge badge-warning">
-                                    {{ $e->position }}
+                                    {{ $e->position->name ?? '-' }}
                                 </span>
                                 @if($e->user)
                                     <span class="badge bg-primary-subtle text-primary">
@@ -274,11 +276,16 @@
                 {{-- Posisi --}}
                 <div class="col-md-6">
                     <label>Posisi</label>
-                    <input name="position"
-                           value="{{ old('position') }}"
-                           class="form-control @error('position') is-invalid @enderror" required>
+                    <select name="position_id" class="form-select @error('position_id') is-invalid @enderror" required>
+                        <option value="">-- Pilih Posisi --</option>
+                        @foreach($positions as $pos)
+                            <option value="{{ $pos->id }}" {{ old('position_id') == $pos->id ? 'selected' : '' }}>
+                                {{ str_repeat('— ', max(0, ($pos->level ?? 0) - 1)) }}{{ $pos->name }}
+                            </option>
+                        @endforeach
+                    </select>
 
-                    @error('position')
+                    @error('position_id')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
@@ -414,14 +421,19 @@
                         @enderror
                     </div>
 
-                    {{-- Posisi --}}
+                    {{-- Jabatan --}}
                     <div class="col-md-6">
-                        <label>Posisi</label>
-                        <input name="position"
-                            value="{{ old('position', $e->position) }}"
-                            class="form-control @error('position') is-invalid @enderror">
+                        <label>Jabatan</label>
+                        <select name="position_id" class="form-select @error('position_id') is-invalid @enderror">
+                            <option value="">-- Pilih Posisi --</option>
+                            @foreach($positions as $pos)
+                                <option value="{{ $pos->id }}" {{ old('position_id', $e->position_id) == $pos->id ? 'selected' : '' }}>
+                                    {{ str_repeat('— ', max(0, ($pos->level ?? 0) - 1)) }}{{ $pos->name }}
+                                </option>
+                            @endforeach
+                        </select>
 
-                        @error('position')
+                        @error('position_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>

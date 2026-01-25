@@ -20,7 +20,7 @@ class PegawaiExport implements FromCollection, WithHeadings, WithEvents, WithCus
         return Employee::select(
             'name',
             'nip',
-            'position',
+            'position_id',
             'department',
             'email',
             'phone',

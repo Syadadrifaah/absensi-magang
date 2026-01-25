@@ -86,6 +86,15 @@ Route::delete('/roles/delete/{role}', [RoleController::class, 'destroy'])->name(
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 
+// Positions (Jabatan)
+use App\Http\Controllers\PositionController;
+Route::get('/positions', [PositionController::class, 'index'])->name('positions.index');
+Route::get('/positions/create', [PositionController::class, 'create'])->name('positions.create');
+Route::post('/positions/store', [PositionController::class, 'store'])->name('positions.store');
+Route::get('/positions/{position}/edit', [PositionController::class, 'edit'])->name('positions.edit');
+Route::put('/positions/{position}', [PositionController::class, 'update'])->name('positions.update');
+Route::delete('/positions/{position}', [PositionController::class, 'destroy'])->name('positions.destroy');
+
 // simpan user baru
 Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
 

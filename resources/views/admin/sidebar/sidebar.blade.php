@@ -48,6 +48,12 @@
                   {{-- <span class="badge badge-secondary">1</span> --}}
                 </a>
               </li>
+              <li class="nav-item {{Request::is('positions') ? 'active' : ''}}">
+                <a href="{{ route('positions.index') }}">
+                  <i class="fas fa-briefcase"></i>
+                  <p>Jabatan</p>
+                </a>
+              </li>
               <li class="nav-item {{ Request::is('dataabsensi') ? 'active' : '' }}">
                 <a href="{{ route('absensi.dataabsensi') }}">
                   <i class="fas fa-calendar-check"></i>
