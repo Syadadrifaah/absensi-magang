@@ -25,17 +25,45 @@ class AppServiceProvider extends ServiceProvider
         //
         Paginator::useBootstrapFive();
 
-        // Gate::define('role', function ($user, $roleName) {
-        //     return $user->role && $user->role->name === $roleName;
-        // });
+        Gate::define('role', function ($user, $roles) {
+            if (!$user) return false;
 
-        Gate::define('role', function ($user, $roleName) {
-            dd(
-                $user->role_id,
-                optional($user->role)->name,
-                $roleName
-            );
+            $allowed = is_array($roles) ? $roles : array_map('trim', explode(',', $roles));
+            // normalize
+            $allowed = array_filter(array_map(function ($r) {
+                return $r === null ? null : (string) $r;
+            }, $allowed));
+
+            $roleName = strtolower(optional($user->role)->name ?? '');
+            $roleId = $user->role_id ? (string) $user->role_id : null;
+
+            // if role relation not loaded but role_id exists, attempt to resolve name
+            if ($roleName === '' && $roleId !== null) {
+                $r = Role::find((int) $roleId);
+                if ($r) $roleName = strtolower($r->name);
+            }
+
+            foreach ($allowed as $token) {
+                if ($token === '') continue;
+                if (is_numeric($token)) {
+                    if ($roleId !== null && $roleId === (string) $token) return true;
+                } else {
+                    if ($roleName !== '' && strtolower($token) === $roleName) return true;
+                }
+            }
+
+            return false;
         });
+
+
+    //    Gate::define('role', function ($user, $roleName) {
+    //         dd(
+    //             'USER:', $user->email,
+    //             'ROLE USER:', optional($user->role)->name,
+    //             'ROLE DIMINTA:', $roleName
+    //         );
+    //     });
+
 
     }
 }

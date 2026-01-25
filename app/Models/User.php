@@ -48,6 +48,37 @@ class User extends Authenticatable
         return $this->hasMany(ActivityLog::class);
     }
 
+    public function hasRole(string|array $roles): bool
+    {
+        $roles = is_array($roles) ? $roles : [$roles];
+
+        // normalize tokens
+        $tokens = array_map(function ($r) {
+            return trim(strtolower((string) $r));
+        }, $roles);
+
+        // resolve current user's role name and id
+        $roleName = $this->role ? strtolower($this->role->name) : null;
+        $roleId = $this->role_id ? (string) $this->role_id : null;
+
+        // if relation not loaded, try to fetch role name from role_id
+        if ($roleName === null && $roleId !== null) {
+            $r = Role::find((int) $roleId);
+            if ($r) $roleName = strtolower($r->name);
+        }
+
+        foreach ($tokens as $t) {
+            if (is_numeric($t) && $roleId !== null && $t === $roleId) {
+                return true;
+            }
+            if ($roleName !== null && $t === $roleName) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     
 
 

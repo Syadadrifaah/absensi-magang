@@ -28,8 +28,8 @@
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-secondary">
-              @can('Admin')
-                
+              @if (auth()->user()->hasRole('Admin'))
+                        
               <li class="nav-item {{Request::is('dashboard') ? 'active' : ''}}">
                 <a href="{{route('dashboard')}}">
                   <i class="fas fa-home"></i>
@@ -56,6 +56,10 @@
                   <p>Jabatan</p>
                 </a>
               </li>
+              @endif
+
+              @if(auth()->user()->hasRole(['Kepala Balai','Admin']))
+                
               <li class="nav-item {{ Request::is('absensi.dataabsensi') ? 'active' : '' }}">
                 <a href="{{ route('absensi.dataabsensi') }}">
                   <i class="fas fa-calendar-check"></i>
@@ -63,23 +67,26 @@
                   {{-- <span class="badge badge-secondary">1</span> --}}
                 </a>
               </li>
-              <li class="nav-item {{ Request::is('absensi.izin') ? 'active' : '' }}">
-                <a href="{{ route('izin.index') }}">
-                  <i class="fas fa-envelope"></i>
-                  <p>Data Izin</p>
-                  {{-- <span class="badge badge-secondary">1</span> --}}
-                </a>
-              </li>
-              <li class="nav-item {{Request::is('datalokasi') ? 'active' : ''}}">
-                <a href="{{route('datalokasi')}}">
-                  <i class="fas fa-map"></i>
-                  <p>Data Lokasi</p>
-                  {{-- <span class="badge badge-secondary">1</span> --}}
-                </a>
-              </li>
-              @endcan
+              @endif
 
-              @can('Kepala Balai','pegawai')
+              @if(auth()->user()->hasRole('Admin'))
+                <li class="nav-item {{ Request::is('absensi.izin') ? 'active' : '' }}">
+                  <a href="{{ route('izin.index') }}">
+                    <i class="fas fa-envelope"></i>
+                    <p>Data Izin</p>
+                    {{-- <span class="badge badge-secondary">1</span> --}}
+                  </a>
+                </li>
+                <li class="nav-item {{Request::is('datalokasi') ? 'active' : ''}}">
+                  <a href="{{route('datalokasi')}}">
+                    <i class="fas fa-map"></i>
+                    <p>Data Lokasi</p>
+                    {{-- <span class="badge badge-secondary">1</span> --}}
+                  </a>
+                </li>
+              @endif
+
+              @if(auth()->user()->hasRole(['Kepala Balai','pegawai']))
                 
               <li class="nav-section">
                 <span class="sidebar-mini-icon">
@@ -93,7 +100,9 @@
                     <p>Absensi</p>
                     </a>
                   </li>
-                @endcan
+                @endif
+                
+            @if(auth()->user()->hasRole('Admin'))
                   <li class="nav-section ">
                   <span class="sidebar-mini-icon">
                     <i class="fa fa-ellipsis-h"></i>
@@ -106,6 +115,8 @@
                     <p>Laporan</p>
                     </a>
                 </li>
+
+                  
             <li class="nav-section">
                 <span class="sidebar-mini-icon">
                   <i class="fa fa-ellipsis-h"></i>
@@ -146,6 +157,7 @@
                     {{-- <span class="badge badge-secondary">1</span> --}}
                     </a>
                 </li>
+              @endif
             </ul>
           </div>
         </div>

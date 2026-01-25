@@ -4,21 +4,27 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    /**
-     * Handle an incoming request.
-     * Usage: ->middleware('role:Admin') or ->middleware('role:Admin,Manager')
-     */
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        if (!$request->user()?->role || $request->user()->role->name !== $role) {
-            abort(403);
+        if (!auth()->check()) {
+            return redirect()->route('login');
+        }
+
+        // 🔥 FIX UTAMA DI SINI
+        $roles = collect($roles)
+            ->flatMap(fn ($r) => explode(',', $r))
+            ->map(fn ($r) => trim($r))
+            ->toArray();
+
+        if (!auth()->user()->hasRole($roles)) {
+            abort(403, 'Unauthorized');
         }
 
         return $next($request);
     }
-
 }
+

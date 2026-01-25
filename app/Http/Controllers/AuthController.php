@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
@@ -23,21 +24,31 @@ class AuthController extends Controller
             $request->session()->regenerate();
 
             $user = Auth::user();
-            $role = $user->role?->name;
 
-            return match ($role) {
-                'Admin'   => redirect()->route('dashboard'),
-                'Kepala'  => redirect()->route('kepala.index'),
-                'Manager' => redirect()->route('manager.index'),
-                'Staff'   => redirect()->route('staff.index'),
-                default   => redirect('/'),
+            // Log role info for debugging authorization issues
+            Log::info('User logged in', [
+                'id' => $user->id,
+                'email' => $user->email,
+                'role_id' => $user->role_id ?? null,
+                'role_name' => optional($user->role)->name ?? null,
+            ]);
+
+            $redirect = match ($user->role?->name) {
+                'Admin'         => route('dashboard'),
+                'Kepala Balai'  => route('absensi.index'),
+                'pegawai'       => route('absensi.index'),
+                // 'Staff'         => route('staff.index'),
+                default         => '/',
             };
+
+            return redirect()->intended($redirect);
         }
 
         return back()
             ->withInput($request->only('email', 'remember'))
             ->withErrors(['email' => 'Email atau password salah.']);
     }
+
 
 
     public function logout(Request $request)
