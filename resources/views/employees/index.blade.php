@@ -116,7 +116,6 @@
                             <td>{{ $employees->firstItem() + $i }}</td>
                             <td>
                                 <div class="fw-semibold">{{ $e->name }}</div>
-                                <small class="text-muted">{{ $e->email }}</small><br>
                                 <span class="badge badge-warning">
                                     {{ $e->position->name ?? '-' }}
                                 </span>

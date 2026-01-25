@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\IzinController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\MapsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\LogbookController;
@@ -21,8 +23,19 @@ Route::get('/', function () {
 
 
 
-Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
 Route::get('/datalokasi', [AdminController::class, 'datalokasi'])->name('datalokasi');
+
+// Grouped routes by role (examples)
+Route::middleware(['auth', 'role:Admin'])->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index']);
+});
+
+
+
+// Auth
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 Route::get('/lokasi-absensi', [AdminController::class, 'index']);
@@ -47,12 +60,14 @@ Route::post('/absensi/store', [AbsensiController::class, 'store'])->name('absens
 // Simpan logbook (modal)
 Route::post('/logbook/store', [LogbookController::class, 'store'])->name('logbook.store');
 
-Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
-Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
-Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
-// Route::get('/employees/update/{id}', [EmployeeController::class, 'edit'])->name('employees.edit');
-Route::put('/employees/update/{id}', [EmployeeController::class, 'update'])->name('employees.update');
-Route::delete('/employees/delete/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+Route::middleware(['auth','can:manage-employees'])->group(function(){
+    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
+    Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
+    Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
+    // Route::get('/employees/update/{id}', [EmployeeController::class, 'edit'])->name('employees.edit');
+    Route::put('/employees/update/{id}', [EmployeeController::class, 'update'])->name('employees.update');
+    Route::delete('/employees/delete/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+});
 
 Route::get('/kategori-employee', [KategoriEmployeeController::class, 'index'])->name('kategori.employee.index');
 Route::post('/kategori-employee/store', [KategoriEmployeeController::class, 'store'])->name('kategori.employee.store');

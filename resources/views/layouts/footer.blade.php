@@ -10,7 +10,7 @@
               </ul>
             </nav>
             <div class="copyright">
-               Made with by
+               Made by
               <a href="https://github.com/Syadadrifaah">SyadadRifaah</a>
             </div>
           </div>

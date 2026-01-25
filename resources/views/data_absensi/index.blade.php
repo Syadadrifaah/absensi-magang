@@ -207,7 +207,7 @@
                             </div>
                         @endforeach
 
-
+                        @foreach ($absensis as $a)
                         {{-- ================= MODAL DETAIL ================= --}}
                         <div class="modal fade" id="modalDetail{{ $a->id }}">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -267,6 +267,7 @@
                                 </div>
                             </div>
                         </div>
+                         @endforeach ($absensis as $a) 
                         {{-- ================================================= --}}
 
                         @empty
@@ -276,11 +277,12 @@
                                 Data absensi tidak ditemukan
                             </td>
                         </tr>
-                        @endforelse
+                    @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
+
 
         {{-- PAGINATION --}}
         <div class="card-footer bg-white">

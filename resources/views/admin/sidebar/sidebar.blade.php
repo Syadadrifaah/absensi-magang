@@ -28,7 +28,9 @@
         <div class="sidebar-wrapper scrollbar scrollbar-inner">
           <div class="sidebar-content">
             <ul class="nav nav-secondary">
-               <li class="nav-item {{Request::is('dashboard') ? 'active' : ''}}">
+              @can('Admin')
+                
+              <li class="nav-item {{Request::is('dashboard') ? 'active' : ''}}">
                 <a href="{{route('dashboard')}}">
                   <i class="fas fa-home"></i>
                   <p>Dashboard</p>
@@ -54,7 +56,7 @@
                   <p>Jabatan</p>
                 </a>
               </li>
-              <li class="nav-item {{ Request::is('dataabsensi') ? 'active' : '' }}">
+              <li class="nav-item {{ Request::is('absensi.dataabsensi') ? 'active' : '' }}">
                 <a href="{{ route('absensi.dataabsensi') }}">
                   <i class="fas fa-calendar-check"></i>
                   <p>Data Absensi</p>
@@ -75,6 +77,10 @@
                   {{-- <span class="badge badge-secondary">1</span> --}}
                 </a>
               </li>
+              @endcan
+
+              @can('Kepala Balai','pegawai')
+                
               <li class="nav-section">
                 <span class="sidebar-mini-icon">
                   <i class="fa fa-ellipsis-h"></i>
@@ -86,8 +92,9 @@
                     <i class="fas fa-user"></i>
                     <p>Absensi</p>
                     </a>
-                </li>
-                 <li class="nav-section ">
+                  </li>
+                @endcan
+                  <li class="nav-section ">
                   <span class="sidebar-mini-icon">
                     <i class="fa fa-ellipsis-h"></i>
                   </span>
