@@ -16,7 +16,7 @@ class RoleMiddleware
 
         // 🔥 FIX UTAMA DI SINI
         $roles = collect($roles)
-            ->flatMap(fn ($r) => explode(',', $r))
+            ->flatMap(fn ($r) => explode(',', $r)) 
             ->map(fn ($r) => trim($r))
             ->toArray();
 
