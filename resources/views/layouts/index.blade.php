@@ -119,11 +119,28 @@
                           <div class="u-text">
                             <h4>{{ Auth::user()->name ?? 'Guest' }}</h4>
                             <p class="text-muted">hello@example.com</p>
-                            <a
-                              href="profile.html"
-                              class="btn btn-xs btn-success btn-sm"
-                              >{{ Auth::user()->role_id }}</a
-                            >
+
+                            @if (Auth::user()->role_id == 1)
+                              <a
+                                href="profile.html"
+                                class="btn btn-xs btn-success btn-sm"
+                                >Admin
+                              </a>
+                            @elseif (Auth::user()->role_id == 2)
+                              <a
+                                href="profile.html"
+                                class="btn btn-xs btn-success btn-sm"
+                                >Kepala Balai
+                              </a>
+                            @else
+                              <a
+                                href="profile.html"
+                                class="btn btn-xs btn-success btn-sm"
+                                >Pegawai
+                              </a>
+                            @endif
+                          
+                            
                           </div>
                         </div>
                       </li>
