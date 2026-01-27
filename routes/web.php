@@ -109,13 +109,6 @@ Route::middleware(['auth','role:Admin'])->group(function () {
 
 Route::middleware(['auth','role:Kepala Balai,pegawai'])->group(function () {
     Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
-    Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
-    Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
-    Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
-    // Route::get('/employees/update/{id}', [EmployeeController::class, 'edit'])->name('employees.edit');
-    Route::put('/employees/update/{id}', [EmployeeController::class, 'update'])->name('employees.update');
-    Route::delete('/employees/delete/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
-
     Route::get('/logbook', [LogbookController::class, 'index'])->name('logbook.index');
     // Absensi
     Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
