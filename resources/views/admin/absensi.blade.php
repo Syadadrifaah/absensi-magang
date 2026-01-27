@@ -101,7 +101,7 @@
                                         <th>Pulang</th>
                                         <th>Status</th>
                                         <th>Keterangan</th>
-                                        <th>Aksi</th>
+                                        {{-- <th>Aksi</th> --}}
                                     </tr>
                                 </thead>
 
@@ -142,7 +142,7 @@
                                             @endif
                                         </td>
 
-                                        <td>
+                                        {{-- <td>
                                             <form action="{{ route('absensi.destroy', $absen->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
@@ -151,7 +151,7 @@
                                                     Hapus
                                                 </button>
                                             </form>
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                     @empty
                                     <tr>
@@ -250,6 +250,8 @@
                                 <label class="form-label">Kegiatan</label>
                                 <textarea name="kegiatan" rows="4" class="form-control" required>{{ $logbook->kegiatan }}</textarea>
                             </div>
+
+                            
                         </div>
 
                         <div class="modal-footer">
@@ -289,6 +291,8 @@
                             <label class="form-label">Kegiatan</label>
                             <textarea name="kegiatan" rows="4" class="form-control" required></textarea>
                         </div>
+
+                        
 
                     </div>
 
@@ -332,10 +336,10 @@
                 </div>
 
                 <div class="modal-footer text-center justify-content-center gap-3">
-                    <button onclick="absen('masuk')" class="btn btn-success btn-lg">
+                    <button type="button" onclick="absen('masuk')" class="btn btn-success btn-lg">
                         Absen Masuk
                     </button>
-                    <button onclick="absen('pulang')" class="btn btn-danger btn-lg">
+                    <button type="button" onclick="absen('pulang')" class="btn btn-danger btn-lg">
                         Absen Pulang
                     </button>
                 </div>
@@ -385,24 +389,37 @@
             fetch("{{ route('absensi.store') }}", {
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': document
-                        .querySelector('meta[name="csrf-token"]').content
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json'
                 },
                 body: formData
             })
-            .then(res => res.json())
-            .then(res => {
-               showToast(res.message, res.status ? 'success' : 'error');
-
-                // showToast(res.message, res.status ? 'success' : 'error');
-
-                if (res.status) {
-                    setTimeout(() => location.reload(), 1500);
+            .then(async res => {
+                const text = await res.text();
+                let data = null;
+                try {
+                    data = JSON.parse(text);
+                } catch (e) {
+                    console.error('Non-JSON response from server:', text);
+                    throw new Error('Invalid JSON response');
                 }
 
+                if (!res.ok) {
+                    console.error('Server responded with error:', res.status, data);
+                    showToast(data.message || ('Server error ' + res.status), 'error');
+                    throw new Error(data.message || ('HTTP ' + res.status));
+                }
 
+                return data;
             })
-            .catch(() => alert('Gagal terhubung ke server'));
+            .then(data => {
+                showToast(data.message, data.status ? 'success' : 'error');
+                if (data.status) setTimeout(() => location.reload(), 1500);
+            })
+            .catch(err => {
+                console.error('Fetch error:', err);
+                alert('Gagal terhubung ke server');
+            });
 
         }, () => alert('Izin lokasi ditolak'));
     }

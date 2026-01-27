@@ -8,16 +8,21 @@ use App\Models\Absensi;
 
 use App\Models\Logbook;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class AbsensiController extends Controller
 {
     public function index()
     {
-        return view('admin.absensi', [
-            'absensis' => Absensi::orderBy('tanggal', 'desc')->get(),
-            'logbooks' => Logbook::orderBy('tanggal', 'desc')->get(),
-        ]);
+        $absensis = Absensi::where('user_id', Auth::id())
+            ->orderByDesc('tanggal')
+            ->paginate(10);
+        $logbooks = Logbook::where('user_id', Auth::id())
+            ->orderByDesc('tanggal')
+            ->paginate(10);     
+        return view('admin.absensi', compact('absensis', 'logbooks'));
+            
     }
 
     public function store(Request $request)
@@ -31,7 +36,7 @@ class AbsensiController extends Controller
                 'longitude' => 'required',
             ]);
 
-            $userId = 1; // DUMMY USER
+            $userId = Auth::id(); // DUMMY USER
             $tanggal = now()->toDateString();
             $waktu   = now()->format('H:i:s');
 

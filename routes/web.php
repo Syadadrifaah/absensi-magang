@@ -102,14 +102,14 @@ Route::middleware(['auth','role:Kepala Balai,pegawai,Admin'])->group(function ()
     Route::get('/logbook', [LogbookController::class, 'index'])->name('logbook.index');
     // Absensi
     Route::delete('/absensi/{id}', [AbsensiController::class, 'destroy'])->name('absensi.destroy');
+    Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
+    Route::post('/absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
 
     // Logbook
     Route::put('/logbook/{id}', [LogbookController::class, 'update'])->name('logbook.update');
     Route::delete('/logbook/{id}', [LogbookController::class, 'destroy'])->name('logbook.destroy');
 
 
-    Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
-    Route::post('/absensi/store', [AbsensiController::class, 'store'])->name('absensi.store');
 
     // Simpan logbook (modal)
     Route::post('/logbook/store', [LogbookController::class, 'store'])->name('logbook.store');

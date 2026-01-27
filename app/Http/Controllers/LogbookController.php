@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\logbook;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LogbookController extends Controller
 {
@@ -17,6 +18,7 @@ class LogbookController extends Controller
         ]);
 
         logbook::create([
+            'user_id'  => Auth::id(),
             'tanggal'  => $request->tanggal,
             'kegiatan' => $request->kegiatan,
         ]);
@@ -32,6 +34,11 @@ class LogbookController extends Controller
         ]);
 
         $logbook = Logbook::findOrFail($id);
+
+        if ($logbook->user_id !== Auth::id()) {
+            return back()->with('comment', 'Anda tidak memiliki akses untuk mengubah logbook ini');
+        }
+
         $logbook->update([
             'tanggal' => $request->tanggal,
             'kegiatan' => $request->kegiatan,
@@ -43,6 +50,11 @@ class LogbookController extends Controller
     public function destroy($id)
     {
         $logbook = Logbook::findOrFail($id);
+
+        if ($logbook->user_id !== Auth::id()) {
+            return back()->with('comment', 'Anda tidak memiliki akses untuk menghapus logbook ini');
+        }
+
         $logbook->delete();
 
         return back()->with('success', 'Logbook berhasil dihapus');
