@@ -102,6 +102,7 @@
                                         <th>Status</th>
                                         <th>Keterangan</th>
                                         {{-- <th>Aksi</th> --}}
+                                        
                                     </tr>
                                 </thead>
 
