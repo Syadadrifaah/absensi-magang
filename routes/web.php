@@ -25,7 +25,6 @@ Route::get('/', function () {
 
 
 
-Route::get('/datalokasi', [AdminController::class, 'datalokasi'])->name('datalokasi');
 
 // Grouped routes by role (examples)
 Route::middleware(['auth','role:Admin'])->group(function () {
@@ -34,29 +33,21 @@ Route::middleware(['auth','role:Admin'])->group(function () {
     Route::post('/kategori-employee/store', [KategoriEmployeeController::class, 'store'])->name('kategori.employee.store');
     Route::put('/kategori-employee/update/{id}', [KategoriEmployeeController::class, 'update'])->name('kategori.employee.update');
     Route::delete('/kategori-employee/delete/{id}', [KategoriEmployeeController::class, 'destroy'])->name('kategori.employee.delete');
-
+    
     Route::get('/izin', [IzinController::class, 'index'])->name('izin.index');
-
     Route::post('/izin/store', [IzinController::class, 'store'])->name('izin.store');
-
     Route::put('/izin/update/{id}', [IzinController::class, 'update'])->name('izin.update');
-
     Route::delete('/izin/delete/{id}', [IzinController::class, 'destroy'])->name('izin.delete');
-
     
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
-
     // Simpan role baru
     Route::post('/roles/store', [RoleController::class, 'store'])->name('roles.store');
-
     // Update role
     Route::put('/roles/update/{role}', [RoleController::class, 'update'])->name('roles.update');
-
     // Hapus role
     Route::delete('/roles/delete/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
-
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
-
+    
     // Positions (Jabatan)
     Route::get('/positions', [PositionController::class, 'index'])->name('positions.index');
     Route::get('/positions/create', [PositionController::class, 'create'])->name('positions.create');
@@ -64,18 +55,18 @@ Route::middleware(['auth','role:Admin'])->group(function () {
     Route::get('/positions/{position}/edit', [PositionController::class, 'edit'])->name('positions.edit');
     Route::put('/positions/{position}', [PositionController::class, 'update'])->name('positions.update');
     Route::delete('/positions/{position}', [PositionController::class, 'destroy'])->name('positions.destroy');
-
+    
     // simpan user baru
     Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
-
     // update user
     Route::put('/users/update/{user}', [UserController::class, 'update'])->name('users.update');
     // hapus user
     Route::delete('/users/delete/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
     Route::put('/activity-logs/update/{log}', [ActivityLogController::class, 'update'])->name('activity-logs.update');
-
     
+    
+    Route::get('/datalokasi', [AdminController::class, 'datalokasi'])->name('datalokasi');
     Route::get('/lokasi-absensi', [AdminController::class, 'index']);
     Route::post('/lokasi-absensi/store', [AdminController::class, 'store'])->name('lokasi.store');
 
@@ -106,7 +97,7 @@ Route::middleware(['auth','role:Admin'])->group(function () {
 
 });
 
-Route::middleware(['auth','role:Kepala Balai,pegawai'])->group(function () {
+Route::middleware(['auth','role:Kepala Balai,pegawai,Admin'])->group(function () {
     Route::get('/absensi', [AbsensiController::class, 'index'])->name('absensi.index');
     Route::get('/logbook', [LogbookController::class, 'index'])->name('logbook.index');
     // Absensi
@@ -122,17 +113,14 @@ Route::middleware(['auth','role:Kepala Balai,pegawai'])->group(function () {
 
     // Simpan logbook (modal)
     Route::post('/logbook/store', [LogbookController::class, 'store'])->name('logbook.store');
-
     Route::get('/data-absensi', [AbsensiController::class, 'dataabsensi'])->name('absensi.dataabsensi');
-    Route::put('/data-absensi/update/{id}', [AbsensiController::class, 'updatedataabsensi'])->name('absensi.updatedataabsensi');
+    Route::put('/data-absensi/update/{id}', [AbsensiController::class, 'updatedataabsensi'])
+        ->name('absensi.updatedataabsensi')
+        ->middleware('role:Admin');
 
 });
     
   // Route::post('/absensi', [AdminController::class, 'Absensi'])->name('absensi');
-
-  Route::middleware(['auth','role:pegawai'])->group(function () {
-        
-  });
 
 
 // Auth
@@ -144,12 +132,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 
-    // Route::get('/employees', [EmployeeController::class, 'index'])->name('employees.index');
-    // Route::get('/employees/create', [EmployeeController::class, 'create'])->name('employees.create');
-    // Route::post('/employees/store', [EmployeeController::class, 'store'])->name('employees.store');
-    // // Route::get('/employees/update/{id}', [EmployeeController::class, 'edit'])->name('employees.edit');
-    // Route::put('/employees/update/{id}', [EmployeeController::class, 'update'])->name('employees.update');
-    // Route::delete('/employees/delete/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
+    
 
 
 

@@ -59,7 +59,14 @@
               @endif
 
               @if(auth()->user()->hasRole(['Kepala Balai','Admin']))
-                
+                @if (auth()->user()->hasRole('Kepala Balai'))
+                  <li class="nav-section">
+                    <span class="sidebar-mini-icon">
+                      <i class="fa fa-ellipsis-h"></i>
+                    </span>
+                    <h4 class="text-section">Data Absensi</h4>
+                  </li>
+                @endif
               <li class="nav-item {{ Request::is('absensi.dataabsensi') ? 'active' : '' }}">
                 <a href="{{ route('absensi.dataabsensi') }}">
                   <i class="fas fa-calendar-check"></i>

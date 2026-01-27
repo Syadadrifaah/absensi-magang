@@ -118,7 +118,7 @@
                           </div>
                           <div class="u-text">
                             <h4>{{ Auth::user()->name ?? 'Guest' }}</h4>
-                            <p class="text-muted">hello@example.com</p>
+                            <p class="text-muted">{{ Auth::user()->email ?? 'Guest' }}</p>
 
                             @if (Auth::user()->role_id == 1)
                               <a

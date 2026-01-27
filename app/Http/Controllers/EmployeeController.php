@@ -66,7 +66,7 @@ class EmployeeController extends Controller
 
         // 📄 PAGINATION (PAKAI QUERY YANG SAMA)
         $employees = $query
-            ->orderBy('position_id','desc')
+            ->orderBy('position_id','asc')
             ->paginate(10)
             ->withQueryString();
 

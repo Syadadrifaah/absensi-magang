@@ -103,11 +103,13 @@
                             </td>
 
                             <td class="text-center">
-                                <button class="btn btn-sm btn-outline-warning"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalEdit{{ $a->id }}">
-                                    <i class="fas fa-pen"></i>
-                                </button>
+                                @if(auth()->user()->hasRole('Admin'))
+                                    <button class="btn btn-sm btn-outline-warning"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEdit{{ $a->id }}">
+                                        <i class="fas fa-pen"></i>
+                                    </button>
+                                @endif
 
                                 <button class="btn btn-sm btn-outline-info"
                                     data-bs-toggle="modal"
@@ -267,7 +269,7 @@
                                 </div>
                             </div>
                         </div>
-                         @endforeach ($absensis as $a) 
+                         @endforeach 
                         {{-- ================================================= --}}
 
                         @empty
