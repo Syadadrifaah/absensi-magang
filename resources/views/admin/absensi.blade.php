@@ -101,7 +101,7 @@
                                         <th>Pulang</th>
                                         <th>Status</th>
                                         <th>Keterangan</th>
-                                        {{-- <th>Aksi</th> --}}
+                                        <th>Aksi</th>
                                         
                                     </tr>
                                 </thead>
@@ -143,7 +143,7 @@
                                             @endif
                                         </td>
 
-                                        {{-- <td>
+                                        <td>
                                             <form action="{{ route('absensi.destroy', $absen->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
@@ -152,7 +152,7 @@
                                                     Hapus
                                                 </button>
                                             </form>
-                                        </td> --}}
+                                        </td>
                                     </tr>
                                     @empty
                                     <tr>

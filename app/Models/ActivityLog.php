@@ -10,7 +10,9 @@ class ActivityLog extends Model
         protected $table = 'user_activity_logs';
         protected $fillable = [
             'user_id',
-            'action',       // WAJIB ADA
+            'action',       
+            'table_name',   
+            'record_id', 
             'description',
             'ip_address',
             'user_agent',

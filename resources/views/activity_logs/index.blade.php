@@ -91,6 +91,7 @@
                                     @if($log->action === 'CREATE') bg-success
                                     @elseif($log->action === 'UPDATE') bg-warning text-dark
                                     @elseif($log->action === 'DELETE') bg-danger
+                                    @elseif($log->action === 'AUTH') bg-warning-subtle text-dark
                                     @else bg-info text-dark
                                     @endif">
                                     {{ $log->action }}
