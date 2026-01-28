@@ -3,6 +3,43 @@
 @section('judul', 'Log-Aktivitas')
 
 @section('content')
+
+<style>
+    <style>
+    .table td, .table th {
+        vertical-align: middle;
+        font-size: 14px;
+    }
+
+    .text-clip-1 {
+        max-width: 220px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .text-clip-2 {
+        max-width: 260px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .log-date {
+        font-size: 13px;
+        color: #6c757d;
+        line-height: 1.4;
+    }
+
+    .ip-badge {
+        font-size: 12px;
+        color: #dc3545;
+        font-family: monospace;
+    }
+</style>
+
+</style>
 <div class="container">
     <div class="card shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
@@ -43,39 +80,46 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $log->user->name ?? '-' }}</td>
-                            <td>{{ $log->user->email ?? '-' }}</td>
-                            <td>{{ $log->user->nip ?? '-' }}</td>
+                            <td class="fw-semibold">{{ $log->user->email ?? '-' }}</td>
                             <td>
-    <span class="badge 
-        @if($log->action === 'CREATE') bg-success
-        @elseif($log->action === 'UPDATE') bg-warning text-dark
-        @elseif($log->action === 'DELETE') bg-danger
-        @else bg-info text-dark
-        @endif">
-        {{ $log->action }}
-    </span>
-</td>
+                                <span class="badge bg-light text-dark">
+                                    {{ $log->user->employee->nip ?? '-' }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    @if($log->action === 'CREATE') bg-success
+                                    @elseif($log->action === 'UPDATE') bg-warning text-dark
+                                    @elseif($log->action === 'DELETE') bg-danger
+                                    @else bg-info text-dark
+                                    @endif">
+                                    {{ $log->action }}
+                                </span>
+                            </td>
 
-<td>
-    <span class="text-muted">
-        {{ $log->activity }}
-    </span>
-</td>
+                            <td>
+                                <span>
+                                    {{ $log->description }}
+                                </span>
+                            </td>
 
-<td>
-    <code>{{ $log->ip_address }}</code>
-</td>
+                            <td>
+                                {{ $log->ip_address }}
+                            </td>
 
-<td class="text-truncate" style="max-width:180px" title="{{ $log->user_agent }}">
-    {{ Str::limit($log->user_agent, 40) }}
-</td>
 
-<td>
-    <small class="text-muted">
-        {{ $log->created_at->format('d M Y') }}<br>
-        {{ $log->created_at->format('H:i') }}
-    </small>
-</td>
+                            <td>
+                                {{ $log->user_agent }}
+                            </td>
+
+
+
+                            <td>
+                                <small class="text-log-date">
+                                    {{ $log->created_at->format('d M Y') }}<br>
+                                    {{ $log->created_at->format('H:i') }}
+                                </small>
+                            </td>
 
                             <td class="text-center">
                                 <button class="btn btn-sm btn-warning"

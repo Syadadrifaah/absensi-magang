@@ -23,16 +23,16 @@ class UserActivityMiddleware
 
         if (Auth::check() && $request->route()) {
 
-            $action  = $this->detectAction($request->method());
-            $table   = $this->detectTableFromController($request);
-            $activity = $this->makeDescription($action, $table);
+            $action = $this->detectAction($request->method());
+            $table  = $this->detectTableFromController($request);
+            $description = $this->makeDescription($action, $table);
 
             ActivityLog::create([
-                'user_id'    => Auth::id(),
-                'action'     => $action,
-                'activity'   => $activity,
-                'ip_address' => $request->ip(),
-                'user_agent' => $request->userAgent(),
+                'user_id'     => Auth::id(),
+                'action'      => $action,
+                'description' => $description,
+                'ip_address'  => $request->ip(),
+                'user_agent'  => $request->userAgent(),
             ]);
         }
 
@@ -42,11 +42,10 @@ class UserActivityMiddleware
     private function detectAction(string $method): string
     {
         return match ($method) {
-            'POST'   => 'CREATE',
-            'PUT',
-            'PATCH'  => 'UPDATE',
-            'DELETE' => 'DELETE',
-            default  => 'READ',
+            'POST'         => 'CREATE',
+            'PUT', 'PATCH' => 'UPDATE',
+            'DELETE'       => 'DELETE',
+            default        => 'READ',
         };
     }
 
@@ -55,14 +54,24 @@ class UserActivityMiddleware
         try {
             $controller = class_basename($request->route()->getController());
 
-            // AbsensiController -> Absensi
+            // AbsensiController → Absensi
             $resource = str_replace('Controller', '', $controller);
 
-            // Absensi -> absensis (plural snake_case)
-            $tableGuess = Str::snake(Str::pluralStudly($resource));
+            // absensi
+            $snake = Str::snake($resource);
 
-            if (Schema::hasTable($tableGuess)) {
-                return $tableGuess;
+            // kandidat nama tabel (dinamis)
+            $candidates = [
+                $snake,
+                Str::plural($snake),
+                'tbl_' . $snake,
+                'tbl_' . Str::plural($snake),
+            ];
+
+            foreach ($candidates as $table) {
+                if (Schema::hasTable($table)) {
+                    return $table;
+                }
             }
 
             return 'data sistem';
