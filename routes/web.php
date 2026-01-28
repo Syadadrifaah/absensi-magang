@@ -3,20 +3,21 @@
 
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\IzinController;
+use App\Http\Controllers\MapsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\MapsController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\PositionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\KategoriEmployeeController;
 use SebastianBergmann\CodeCoverage\Report\Xml\Report;
-use App\Http\Controllers\PositionController;
 
 
 Route::get('/', function () {
@@ -28,7 +29,8 @@ Route::get('/', function () {
 
 // Grouped routes by role (examples)
 Route::middleware(['auth','role:Admin'])->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Route::get('/dashboard', [DashboardController::class, 'showData'])->name('show.data');
     Route::get('/kategori-employee', [KategoriEmployeeController::class, 'index'])->name('kategori.employee.index');
     Route::post('/kategori-employee/store', [KategoriEmployeeController::class, 'store'])->name('kategori.employee.store');
     Route::put('/kategori-employee/update/{id}', [KategoriEmployeeController::class, 'update'])->name('kategori.employee.update');

@@ -46,18 +46,37 @@
                             <td>{{ $log->user->email ?? '-' }}</td>
                             <td>{{ $log->user->nip ?? '-' }}</td>
                             <td>
-                                <span class="badge bg-info text-dark">
-                                    {{ strtoupper($log->action) }}
-                                </span>
-                            </td>
-                            <td>{{ $log->description }}</td>
-                            <td>{{ $log->ip_address }}</td>
-                            <td class="text-truncate" style="max-width:150px">
-                                {{ $log->user_agent }}
-                            </td>
-                            <td>
-                                {{ $log->created_at->format('d-m-Y H:i') }}
-                            </td>
+    <span class="badge 
+        @if($log->action === 'CREATE') bg-success
+        @elseif($log->action === 'UPDATE') bg-warning text-dark
+        @elseif($log->action === 'DELETE') bg-danger
+        @else bg-info text-dark
+        @endif">
+        {{ $log->action }}
+    </span>
+</td>
+
+<td>
+    <span class="text-muted">
+        {{ $log->activity }}
+    </span>
+</td>
+
+<td>
+    <code>{{ $log->ip_address }}</code>
+</td>
+
+<td class="text-truncate" style="max-width:180px" title="{{ $log->user_agent }}">
+    {{ Str::limit($log->user_agent, 40) }}
+</td>
+
+<td>
+    <small class="text-muted">
+        {{ $log->created_at->format('d M Y') }}<br>
+        {{ $log->created_at->format('H:i') }}
+    </small>
+</td>
+
                             <td class="text-center">
                                 <button class="btn btn-sm btn-warning"
                                     data-bs-toggle="modal"

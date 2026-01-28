@@ -235,7 +235,7 @@ class AbsensiController extends Controller
         }
 
         $absensis = $query
-            ->orderByDesc('tanggal')
+            ->orderByDesc('tanggal','desc')
             ->paginate(10)
             ->withQueryString();
 

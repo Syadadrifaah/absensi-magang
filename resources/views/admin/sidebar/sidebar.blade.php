@@ -67,7 +67,7 @@
                     <h4 class="text-section">Data Absensi</h4>
                   </li>
                 @endif
-              <li class="nav-item {{ Request::is('absensi.dataabsensi') ? 'active' : '' }}">
+              <li class="nav-item {{ request()->routeIs('absensi.dataabsensi') ? 'active' : '' }}">
                 <a href="{{ route('absensi.dataabsensi') }}">
                   <i class="fas fa-calendar-check"></i>
                   <p>Data Absensi</p>
@@ -77,7 +77,7 @@
               @endif
 
               @if(auth()->user()->hasRole('Admin'))
-                <li class="nav-item {{ Request::is('absensi.izin') ? 'active' : '' }}">
+                <li class="nav-item {{ request()->routeIs('izin.index') ? 'active' : '' }}">
                   <a href="{{ route('izin.index') }}">
                     <i class="fas fa-envelope"></i>
                     <p>Data Izin</p>

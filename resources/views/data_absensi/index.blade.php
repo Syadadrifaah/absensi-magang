@@ -272,8 +272,8 @@
                          @endforeach 
                         {{-- ================================================= --}}
 
-                        @empty
-                        <tr>
+                        @empty  
+                     <tr>
                             <td colspan="7"
                                 class="text-center text-muted py-4">
                                 Data absensi tidak ditemukan

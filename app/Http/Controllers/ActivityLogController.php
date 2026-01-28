@@ -8,40 +8,29 @@ use Illuminate\Http\Request;
 class ActivityLogController extends Controller
 {
     //
-    public function index(Request $request)
+    public function index()
     {
-        $search = $request->search;
+        $logs = ActivityLog::with('user')
+            ->latest()
+            ->paginate(10);
 
-        $query = ActivityLog::with('user')
-            ->when($search, function ($q) use ($search) {
-                $q->whereHas('user', function ($u) use ($search) {
-                    $u->where('name', 'like', "%$search%")
-                    ->orWhere('email', 'like', "%$search%")
-                    ->orWhere('nip', 'like', "%$search%");
-                });
-            })
-            ->orderByDesc('created_at');
-
-        // pagination ringan
-        $logs = $query->simplePaginate(10)->withQueryString();
-
-        // total data (hanya count, masih aman)
-        $total = $query->count();
+        $total = ActivityLog::count();
 
         return view('activity_logs.index', compact('logs', 'total'));
     }
 
-
-    public function update(Request $request, ActivityLog $log)
+    public function update($id)
     {
-        $request->validate([
-            'description' => 'nullable|string'
+        $log = ActivityLog::findOrFail($id);
+
+        request()->validate([
+            'activity' => 'required|string'
         ]);
 
         $log->update([
-            'description' => $request->description
+            'activity' => request('activity'),
         ]);
 
-        return back()->with('success', 'Deskripsi log berhasil diperbarui');
+        return back()->with('success', 'Deskripsi log diperbarui');
     }
 }

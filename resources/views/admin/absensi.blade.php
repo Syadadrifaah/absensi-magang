@@ -87,7 +87,7 @@
                     <div class="card shadow-sm border-0">
                         <div class="card-header bg-white fw-semibold d-flex justify-content-between">
                             <span>Data Absensi</span>
-                            <span class="text-muted small">Total: {{ $absensis->count() }}</span>
+                            <span class="text-muted small">Total: {{ $absensis->total() }}</span>
                         </div>
 
                         <div class="table-responsive">

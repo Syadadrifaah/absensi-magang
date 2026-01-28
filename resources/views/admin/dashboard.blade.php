@@ -29,7 +29,7 @@
                 <div class="col col-stats ms-3 ms-sm-0">
                 <div class="numbers">
                     <p class="card-category">Hadir</p>
-                    <h4 class="card-title">1,294</h4>
+                    <h4 class="card-title">{{ $hadir }}</h4>
                 </div>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                 <div class="col col-stats ms-3 ms-sm-0">
                 <div class="numbers">
                     <p class="card-category">Tidak Hadir</p>
-                    <h4 class="card-title">1303</h4>
+                    <h4 class="card-title">{{ $tidakHadir }}</h4>
                 </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                 <div class="col col-stats ms-3 ms-sm-0">
                 <div class="numbers">
                     <p class="card-category">Izin</p>
-                    <h4 class="card-title">$ 1,345</h4>
+                    <h4 class="card-title">{{ $izin}}</h4>
                 </div>
                 </div>
             </div>
@@ -92,7 +92,7 @@
                 <div class="col col-stats ms-3 ms-sm-0">
                 <div class="numbers">
                     <p class="card-category">Pegawai</p>
-                    <h4 class="card-title">576</h4>
+                    <h4 class="card-title">{{ $totalPegawai }}</h4>
                 </div>
                 </div>
             </div>
@@ -134,14 +134,22 @@
      
 
 <script>
-    var pieChart = document.getElementById("pieChart").getContext("2d");
-    var myPieChart = new Chart(pieChart, {
+document.addEventListener("DOMContentLoaded", function () {
+
+    // ================= PIE CHART =================
+    const pieCtx = document.getElementById("pieChart").getContext("2d");
+
+    new Chart(pieCtx, {
         type: "pie",
         data: {
-            labels: ["New Visitors", "Subscribers", "Active Users"],
+            labels: ["Hadir", "Izin", "Tidak Hadir"],
             datasets: [{
-                data: [50, 35, 15],
-                backgroundColor: ["#1d7af3", "#f3545d", "#fdaf4b"],
+                data: [
+                    {{ $hadir }},
+                    {{ $izin }},
+                    {{ $tidakHadir }}
+                ],
+                backgroundColor: ["#1d7af3", "#fdaf4b", "#f3545d"],
                 borderWidth: 0
             }]
         },
@@ -150,53 +158,39 @@
             maintainAspectRatio: false,
             plugins: {
                 legend: {
-                    position: "bottom",
-                    labels: {
-                        color: "rgb(154,154,154)",
-                        font: { size: 11 },
-                        usePointStyle: true,
-                        padding: 20
-                    }
-                },
-                tooltip: {
-                    enabled: true
+                    position: "bottom"
                 }
             }
         }
     });
 
-    var barChart = document.getElementById("barChart").getContext("2d");
-var myBarChart = new Chart(barChart, {
-    type: "bar",
-    data: {
-        labels: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-        datasets: [{
-            label: "Sales",
-            backgroundColor: "rgb(23, 125, 255)",
-            borderColor: "rgb(23, 125, 255)",
-            data: [3,2,9,5,4,6,4,6,7,8,7,4],
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        scales: {
-            y: {
-                beginAtZero: true
-            }
+    // ================= BAR CHART =================
+    const barCtx = document.getElementById("barChart").getContext("2d");
+
+    new Chart(barCtx, {
+        type: "bar",
+        data: {
+            labels: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Aug","Sep","Oct","Nov","Dec"],
+            datasets: [{
+                label: "Jumlah Pegawai Absen",
+                backgroundColor: "rgb(23, 125, 255)",
+                data: @json($barData)
+            }]
         },
-        plugins: {
-            legend: {
-                display: true,
-                position: "top"
-            },
-            tooltip: {
-                enabled: true
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
             }
         }
-    }
+    });
+
 });
 </script>
+
 
 
 @endsection
