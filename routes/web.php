@@ -9,6 +9,7 @@ use App\Http\Controllers\MapsController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\LogbookController;
@@ -68,13 +69,13 @@ Route::middleware(['auth','role:Admin'])->group(function () {
     Route::put('/activity-logs/update/{log}', [ActivityLogController::class, 'update'])->name('activity-logs.update');
     
     
-    Route::get('/datalokasi', [AdminController::class, 'datalokasi'])->name('datalokasi');
-    Route::get('/lokasi-absensi', [AdminController::class, 'index']);
-    Route::post('/lokasi-absensi/store', [AdminController::class, 'store'])->name('lokasi.store');
+    Route::get('/datalokasi', [LokasiController::class, 'datalokasi'])->name('datalokasi');
+    Route::get('/lokasi-absensi', [LokasiController::class, 'index']);
+    Route::post('/lokasi-absensi/store', [LokasiController::class, 'store'])->name('lokasi.store');
 
-    Route::put('/lokasi-absensi/{id}', [AdminController::class, 'update'])->name('lokasi.update');
-    Route::delete('/lokasi-absensi/{id}', [AdminController::class, 'destroy'])->name('lokasi.destroy');
-    Route::patch('/lokasi/{id}/toggle', [AdminController::class, 'toggle'])->name('lokasi.toggle');
+    Route::put('/lokasi-absensi/{id}', [LokasiController::class, 'update'])->name('lokasi.update');
+    Route::delete('/lokasi-absensi/{id}', [LokasiController::class, 'destroy'])->name('lokasi.destroy');
+    Route::patch('/lokasi/{id}/toggle', [LokasiController::class, 'toggle'])->name('lokasi.toggle');
 
     Route::get('/laporan', [ReportController::class, 'index'])
         ->name('laporan.index');
