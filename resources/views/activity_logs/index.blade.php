@@ -4,43 +4,13 @@
 
 @section('content')
 
-<style>
-    <style>
-    .table td, .table th {
-        vertical-align: middle;
-        font-size: 14px;
-    }
-
-    .text-clip-1 {
-        max-width: 220px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-
-    .text-clip-2 {
-        max-width: 260px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .log-date {
-        font-size: 13px;
-        color: #6c757d;
-        line-height: 1.4;
-    }
-
-    .ip-badge {
-        font-size: 12px;
-        color: #dc3545;
-        font-family: monospace;
-    }
-</style>
-
-</style>
 <div class="container">
+    <div class="mb-3">
+            <h4 class="fw-semibold mb-1">Activity Logs</h4>
+            <small class="text-muted">
+                <a href="#">Dashboard</a> • Activity Logs
+            </small>
+        </div>
     <div class="card shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">User Activity Logs</h5>

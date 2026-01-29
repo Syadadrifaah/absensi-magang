@@ -4,12 +4,15 @@
 
 @section('content')
 <div class="container-fluid">
+       
 
     {{-- HEADER --}}
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h4 class="fw-semibold mb-0">Data Izin Pegawai</h4>
-            <small class="text-muted">Kelola data izin & surat keterangan</small>
+         <div class="mb-3">
+            <h4 class="fw-semibold mb-1">Data Izin</h4>
+            <small class="text-muted">
+                <a href="#">Dashboard</a> • Data Izin
+            </small>
         </div>
         <button class="btn btn-primary"
                 data-bs-toggle="modal"
@@ -23,6 +26,7 @@
     {{-- CARD TABLE --}}
     <div class="card border-0 shadow-sm">
         <div class="table-responsive">
+            <div class="card-title p-3">Data Izin Pegawai</div>
             <table class="table table-hover align-middle mb-0">
                 <thead class="bg-light text-center">
                     <tr>

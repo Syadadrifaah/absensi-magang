@@ -4,6 +4,12 @@
 
 @section('content')
 <div class="container">
+    <div class="mb-2">
+            <h4 class="fw-semibold mb-1">Data Users</h4>
+            <small class="text-muted">
+                <a href="#">Dashboard</a> • Users
+            </small>
+        </div>
     <div class="card shadow-sm">
         <div class="card-header d-flex justify-content-between">
             <h5>Manajemen User</h5>

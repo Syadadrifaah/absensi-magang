@@ -4,6 +4,12 @@
 
 @section('content')
 <div class="container">
+    <div class="mb-3">
+            <h4 class="fw-semibold mb-1">Manajemen Role</h4>
+            <small class="text-muted">
+                <a href="#">Dashboard</a> • Role
+            </small>
+        </div>
     <div class="card shadow-sm">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Manajemen Role</h5>

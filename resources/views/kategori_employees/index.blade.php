@@ -4,6 +4,12 @@
 
 @section('content')
 <div class="container">
+        <div class="mb-2">
+            <h4 class="fw-semibold mb-1">Data Kategori Pegawai</h4>
+            <small class="text-muted">
+                <a href="#">Dashboard</a> • Kategori Pegawai
+            </small>
+        </div>
 
     <div class="card shadow-sm border-0">
         <div class="card-header bg-white d-flex justify-content-between">

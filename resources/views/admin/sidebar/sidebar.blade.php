@@ -123,32 +123,39 @@
                     </a>
                 </li>
 
-                  
+                  @php
+                      $userMenuActive = Request::routeIs([
+                          'users.*',
+                          'roles.*',
+                          'kategori.employee.*'
+                      ]);
+                  @endphp
+
             <li class="nav-section">
                 <span class="sidebar-mini-icon">
                   <i class="fa fa-ellipsis-h"></i>
                 </span>
                 <h4 class="text-section">Manajemen User</h4>
             </li>
-             <li class="nav-item {{ Request::is(['kategori.employee.index', 'roles.index', 'users.index']) ? 'active' : '' }}">
-                <a data-bs-toggle="collapse" href="#base">
+             <li class="nav-item {{ $userMenuActive ? 'active' : '' }}">
+                <a data-bs-toggle="collapse" href="#base" aria-expanded="{{ $userMenuActive ? 'true' : 'false' }}">
                   <i class="fas fa-bars"></i>
                   <p>Manajemen User</p>
                   <span class="caret"></span>
                 </a>
-                <div class="collapse" id="base">
+                <div class="collapse {{ $userMenuActive ? 'show' : '' }}" id="base">
                   <ul class="nav nav-collapse">
-                    <li>
+                    <li class="{{ Request::routeIs('users.*') ? 'active' : '' }}">
                       <a href="{{ route('users.index') }}">
                         <span class="sub-item">User</span>
                       </a>
                     </li>
-                    <li>
+                    <li class="{{ Request::routeIs('roles.*') ? 'active' : '' }}">
                       <a href="{{ route('roles.index') }}">
                         <span class="sub-item">Role</span>
                       </a>
                     </li>
-                    <li>
+                    <li class="{{ Request::routeIs('kategori.employee.*') ? 'active' : '' }}">
                       <a href="{{ route('kategori.employee.index') }}">
                         <span class="sub-item">Kategori</span>
                       </a>

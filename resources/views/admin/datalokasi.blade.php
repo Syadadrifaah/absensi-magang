@@ -6,7 +6,12 @@
 
 <div class="container">
 
-
+     <div class="mb-3">
+            <h4 class="fw-semibold mb-1">Data Absensi</h4>
+            <small class="text-muted">
+                <a href="#">Dashboard</a> • Data Absensi
+            </small>
+        </div>
     {{-- DATA LOKASI --}}
     {{-- <div class="container py-3"> --}}
        <div class="card">

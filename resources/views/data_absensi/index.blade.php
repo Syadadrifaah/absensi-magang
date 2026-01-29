@@ -4,6 +4,12 @@
 
 @section('content')
 <div class="container-fluid">
+    <div class="mb-3">
+        <h4 class="fw-semibold mb-1">Data Absensi</h4>
+        <small class="text-muted">
+            <a href="#">Dashboard</a> • Data Absensi
+        </small>
+    </div>
 
     <div class="card shadow-sm border-0">
         <div class="card-header bg-white">

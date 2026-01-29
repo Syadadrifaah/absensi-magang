@@ -5,9 +5,11 @@
 @section('content')
 
     <div class="d-flex align-items-left align-items-md-center flex-column flex-md-row pt-2 pb-4">
-        <div>
-        <h3 class="fw-bold mb-3">Dashboard</h3>
-        {{-- <h6 class="op-7 mb-2">Sistem Absensi Pegawai</h6> --}}
+        <div class="mb-2">
+            <h4 class="fw-semibold mb-1">Data Absensi</h4>
+            <small class="text-muted">
+                <a href="#">Dashboard</a> • Home
+            </small>
         </div>
         <div class="ms-md-auto py-2 py-md-0">
         {{-- <a href="#" class="btn btn-label-info btn-round me-2">Manage</a>
@@ -105,7 +107,7 @@
       <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Pie Chart</div>
+                    <div class="card-title">Grafik Absensi Per Hari</div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">
@@ -120,7 +122,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Bar Chart</div>
+                    <div class="card-title">Grafik Absensi Per Bulan</div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">

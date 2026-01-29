@@ -26,6 +26,12 @@
 
 
 <div class="container">
+    <div class="mb-3">
+        <h4 class="fw-semibold mb-1">Data Pegawai</h4>
+        <small class="text-muted">
+            <a href="#">Dashboard</a> • Data Pegawai
+        </small>
+    </div>
 
     <div class="card shadow-md border-0">
         {{-- HEADER --}}

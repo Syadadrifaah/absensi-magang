@@ -4,8 +4,11 @@
 
 @section('content')
 <div class="page-inner">
-        <div class="page-header">
-                <h4 class="page-title">Jabatan (Position)</h4>
+         <div class="mb-3">
+            <h4 class="fw-semibold mb-1">Data Jabatan</h4>
+            <small class="text-muted">
+                <a href="#">Dashboard</a> • Data Jabatan
+            </small>
         </div>
 
         <div class="card">
