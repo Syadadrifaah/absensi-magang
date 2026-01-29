@@ -95,7 +95,7 @@
                   >
                     <div class="avatar-sm">
                       <img
-                        src="assets/img/profile.jpg"
+                        src="{{ asset('assets/img/usernew.png') }}"
                         alt="..."
                         class="avatar-img rounded-circle"
                       />
