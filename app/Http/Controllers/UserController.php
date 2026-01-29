@@ -12,7 +12,9 @@ class UserController extends Controller
     //
     public function index()
     {
-        $users = User::with('role')->latest()->get();
+        $users = User::with('role')->latest()
+                ->paginate(10)
+                ->withQueryString();
         $roles = Role::all();
 
         return view('users.index', compact('users', 'roles'));

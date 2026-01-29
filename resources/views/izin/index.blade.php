@@ -82,16 +82,12 @@
                                 <i class="fas fa-edit"></i>
                             </button>
 
-                            <form action="{{ route('izin.delete', $izin->id) }}"
-                                method="POST"
-                                class="d-inline"
-                                onsubmit="return confirm('Yakin hapus izin?')">
-                                @csrf
-                                @method('DELETE')
-                                <button class="btn btn-sm btn-danger">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </form>
+                            <button class="btn btn-sm btn-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ $izin->id }}">
+                                <i class="fas fa-trash"></i>
+                            </button>
+
                         </td>
 
                     </tr>
@@ -283,6 +279,56 @@
     </div>
 </div>
 @endforeach
+
+@foreach ($izins as $izin)
+<div class="modal fade" id="deleteModal{{ $izin->id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form method="POST" action="{{ route('izin.delete', $izin->id) }}">
+                @csrf
+                @method('DELETE')
+
+                 <div class="modal-header border-0">
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body text-center py-4">
+
+                    {{-- ICON BULAT --}}
+                    <div
+                        class="d-inline-flex align-items-center justify-content-center rounded-circle shadow bg-light bg-opacity-10 text-warning mb-3"
+                        style="width: 90px; height: 90px;">
+                        <i class="fas fa-question fs-1"></i>
+                    </div>
+
+                    <h5 class="mb-1">Hapus Data Izin?</h5>
+
+                    <p class="text-muted mb-4">
+                        Yakin ingin menghapus izin milik
+                        <strong>{{ $izin->user->name }}</strong>
+                        <br>
+                        dari tanggal ({{ $izin->tanggal_mulai }} s/d {{ $izin->tanggal_selesai }})
+                    </p>
+
+                    <div class="d-flex justify-content-center gap-2">
+                         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                            Batal
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            Ya, Hapus
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+@endforeach
+
 
 
 

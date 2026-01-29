@@ -35,11 +35,15 @@
                                                         Edit
                                                     </button>
 
-                                                    <button type="button" class="btn btn-sm btn-danger btn-delete-position"
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-danger btn-delete-position"
                                                         data-action="{{ route('positions.destroy', $pos->id) }}"
-                                                        data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
+                                                        data-name="{{ $pos->name }}"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deletePositionModal">
                                                         Hapus
                                                     </button>
+
                                                 </div>
                                         </div>
                                 @endforeach
@@ -126,62 +130,108 @@
             </div>
         </div>
 
+        <!-- DELETE MODAL -->
+        @foreach ($positions as $pos)
+            
+        <div class="modal fade" id="deletePositionModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <form id="deletePositionForm" method="POST" action="#">
+                        @csrf
+                        @method('DELETE')
+
+                        <!-- HEADER TANPA BORDER -->
+                        <div class="modal-header border-0">
+                            <button type="button"
+                                    class="btn-close ms-auto"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+
+                        <div class="modal-body text-center py-4">
+
+                            <!-- ICON BULAT + SHADOW -->
+                            <div
+                                class="d-inline-flex align-items-center justify-content-center rounded-circle shadow bg-light bg-opacity-10 text-danger mb-3"
+                                style="width: 90px; height: 90px;"
+                            >
+                                <i class="fas fa-question fs-1"></i>
+                            </div>
+
+                            <h5 class="mb-1">Hapus Jabatan?</h5>
+
+                            <p class="text-muted mb-4">
+                                Apakah Anda yakin ingin menghapus jabatan
+                                <strong id="delete-position-name">—</strong>?
+                            </p>
+
+                            <div class="d-flex justify-content-center gap-2">
+                                <button type="button"
+                                        class="btn btn-danger"
+                                        data-bs-dismiss="modal">
+                                    Batal
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-success">
+                                    Ya, Hapus
+                                </button>
+                            </div>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        @endforeach
+
+
+
 </div>
 
-@endsection
 
-@section('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-    // Populate edit modal when shown (uses Bootstrap event.relatedTarget)
-    var editModal = document.getElementById('editPositionModal');
+document.addEventListener('DOMContentLoaded', function () {
+
+    // EDIT MODAL
+    const editModal = document.getElementById('editPositionModal');
     if (editModal) {
         editModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget; // Button that triggered the modal
+            const button = event.relatedTarget;
             if (!button) return;
-            var id = button.getAttribute('data-id');
-            var name = button.getAttribute('data-name');
-            var level = button.getAttribute('data-level');
 
-            document.getElementById('edit-name').value = name || '';
+            const id    = button.dataset.id;
+            const name  = button.dataset.name;
+            const level = button.dataset.level;
+
+            document.getElementById('edit-name').value  = name || '';
             document.getElementById('edit-level').value = level || '';
 
-            var form = document.getElementById('editPositionForm');
-            form.action = '/positions/' + id;
+            document.getElementById('editPositionForm').action = `/positions/${id}`;
         });
     }
 
-    // Confirm delete modal: set action and submit on confirm
-    var deleteModal = document.getElementById('confirmDeleteModal');
-    var deleteAction = null;
+    // DELETE MODAL
+    const deleteModal = document.getElementById('deletePositionModal');
+    const deleteForm = document.getElementById('deletePositionForm');
+    const deleteName = document.getElementById('delete-position-name');
+
     if (deleteModal) {
         deleteModal.addEventListener('show.bs.modal', function (event) {
-            var button = event.relatedTarget;
+            const button = event.relatedTarget;
             if (!button) return;
-            deleteAction = button.getAttribute('data-action');
-        });
 
-        document.getElementById('confirm-delete-btn').addEventListener('click', function(){
-            if (!deleteAction) return;
-            // create form and submit
-            var form = document.createElement('form');
-            form.method = 'POST';
-            form.action = deleteAction;
-            var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            var inputToken = document.createElement('input');
-            inputToken.type = 'hidden';
-            inputToken.name = '_token';
-            inputToken.value = token;
-            form.appendChild(inputToken);
-            var inputMethod = document.createElement('input');
-            inputMethod.type = 'hidden';
-            inputMethod.name = '_method';
-            inputMethod.value = 'DELETE';
-            form.appendChild(inputMethod);
-            document.body.appendChild(form);
-            form.submit();
+            deleteForm.action = button.dataset.action;
+            deleteName.textContent = button.dataset.name ?? '—';
         });
     }
+
 });
 </script>
+
 @endsection
+
+

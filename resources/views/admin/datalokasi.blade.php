@@ -74,14 +74,15 @@
                                             Edit
                                         </button>
 
-                                        <form action="{{ route('lokasi.destroy', $lokasi->id) }}"
-                                            method="POST" class="w-100">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button class="btn btn-outline-danger w-100">
-                                                Hapus
-                                            </button>
-                                        </form>
+                                        <button type="button"
+                                                class="btn btn-outline-danger w-100 btn-delete-lokasi"
+                                                data-action="{{ route('lokasi.destroy', $lokasi->id) }}"
+                                                data-name="{{ $lokasi->nama_lokasi }}"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#deleteLokasiModal">
+                                            Hapus
+                                        </button>
+
                                     </div>
 
                                 </div>
@@ -223,6 +224,60 @@
     </div>
 </div>
 @endforeach
+
+<!-- ================= MODAL DELETE LOKASI ================= -->
+<div class="modal fade" id="deleteLokasiModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form id="deleteLokasiForm" method="POST" action="">
+                @csrf
+                @method('DELETE')
+
+                <!-- HEADER TANPA BORDER -->
+                <div class="modal-header border-0">
+                    <button type="button"
+                            class="btn-close ms-auto"
+                            data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body text-center py-4">
+
+                    <!-- ICON BULAT + SHADOW -->
+                    <div
+                        class="d-inline-flex align-items-center justify-content-center rounded-circle shadow bg-light bg-opacity-10 text-danger mb-3"
+                        style="width: 90px; height: 90px;">
+                        <i class="fas fa-question fs-1"></i>
+                    </div>
+
+                    <h5 class="mb-1">Hapus Lokasi Absensi?</h5>
+
+                    <p class="text-muted mb-4">
+                        Apakah Anda yakin ingin menghapus lokasi
+                        <strong id="delete-lokasi-name">—</strong>?
+                    </p>
+
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="button"
+                                class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            Batal
+                        </button>
+
+                        <button type="submit"
+                                class="btn btn-danger">
+                            Ya, Hapus
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
 
 {{-- LEAFLET --}}
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
@@ -389,6 +444,24 @@
             }
         );
     }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const deleteModal = document.getElementById('deleteLokasiModal');
+        const deleteForm  = document.getElementById('deleteLokasiForm');
+        const deleteName  = document.getElementById('delete-lokasi-name');
+
+        if (deleteModal) {
+            deleteModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                if (!button) return;
+
+                deleteForm.action = button.dataset.action;
+                deleteName.textContent = button.dataset.name ?? '—';
+            });
+        }
+
+    });
 
 </script>
 @endsection

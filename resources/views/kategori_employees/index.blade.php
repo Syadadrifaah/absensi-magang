@@ -48,55 +48,7 @@
                         </td>
                     </tr>
 
-                    {{-- MODAL EDIT --}}
-                    <div class="modal fade" id="modalEdit{{ $k->id }}">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <form method="POST" action="{{ route('kategori.employee.update', $k->id) }}" class="modal-content">
-                                @csrf
-                                @method('PUT')
-
-                                <div class="modal-header">
-                                    <h6 class="modal-title">Edit Kategori</h6>
-                                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <label>Nama Kategori</label>
-                                    <input name="nama_kategori" value="{{ $k->nama_kategori }}" class="form-control" required>
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button class="btn btn-light btn-sm" data-bs-dismiss="modal">Batal</button>
-                                    <button class="btn btn-success btn-sm">Simpan</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    {{-- MODAL DELETE --}}
-                    <div class="modal fade" id="modalDelete{{ $k->id }}">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <form method="POST" action="{{ route('kategori.employee.delete', $k->id) }}" class="modal-content">
-                                @csrf
-                                @method('DELETE')
-
-                                <div class="modal-header">
-                                    <h6 class="modal-title">Hapus Kategori</h6>
-                                    <button class="btn-close" data-bs-dismiss="modal"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    Yakin ingin menghapus kategori
-                                    <strong>{{ $k->nama_kategori }}</strong>?
-                                </div>
-
-                                <div class="modal-footer">
-                                    <button class="btn btn-light btn-sm" data-bs-dismiss="modal">Batal</button>
-                                    <button class="btn btn-danger btn-sm">Hapus</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                    
 
                     @empty
                     <tr>
@@ -114,6 +66,101 @@
         </div>
     </div>
 </div>
+
+@foreach ($kategoriEmployees as $k)
+    
+<div class="modal fade" id="modalEdit{{ $k->id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form method="POST" action="{{ route('kategori.employee.update', $k->id) }}">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-header">
+                    <h6 class="modal-title">Edit Kategori</h6>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Kategori</label>
+                        <input
+                            type="text"
+                            name="nama_kategori"
+                            value="{{ $k->nama_kategori }}"
+                            class="form-control"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light btn-sm" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-success btn-sm">
+                        Simpan
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+@endforeach
+
+@foreach ($kategoriEmployees as $k)
+
+<div class="modal fade" id="modalDelete{{ $k->id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form method="POST" action="{{ route('kategori.employee.delete', $k->id) }}">
+                @csrf
+                @method('DELETE')
+
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body text-center">
+                    <!-- ICON BULAT -->
+                    <div
+                        class="d-inline-flex align-items-center justify-content-center rounded-circle shadow bg-light bg-opacity-10 text-warning mb-3"
+                        style="width: 90px; height: 90px;">
+                        <i class="fas fa-question fs-1"></i>
+                    </div>
+
+                    <h5 class="mb-2">Hapus Kategori?</h5>
+
+                    <p class="text-muted mb-0">
+                        Apakah Anda yakin ingin menghapus kategori
+                        <strong>{{ $k->nama_kategori }}</strong>?
+                        <br>
+                        Tindakan ini membuat data tidak dapat dikembalikan.
+                    </p>
+                </div>
+
+                <div class="modal-footer border-0 justify-content-center">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        Ya, Hapus
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+    
+@endforeach
+
 
 {{-- MODAL CREATE --}}
 <div class="modal fade" id="modalCreate">

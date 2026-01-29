@@ -49,61 +49,116 @@
                             </button>
                         </td>
                     </tr>
-
-                    {{-- MODAL EDIT --}}
-                    <div class="modal fade" id="editModal{{ $role->id }}">
-                        <div class="modal-dialog">
-                            <form method="POST" action="{{ route('roles.update', $role->id) }}">
-                                @csrf
-                                @method('PUT')
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5>Edit Role</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="mb-3">
-                                            <label>Nama Role</label>
-                                            <input type="text" name="name" class="form-control"
-                                                value="{{ $role->name }}" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label>Deskripsi</label>
-                                            <textarea name="description" class="form-control">{{ $role->description }}</textarea>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                        <button class="btn btn-warning">Update</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    {{-- MODAL DELETE --}}
-                    <div class="modal fade" id="deleteModal{{ $role->id }}">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <form method="POST" action="{{ route('roles.destroy', $role->id) }}">
-                                @csrf
-                                @method('DELETE')
-                                <div class="modal-content">
-                                    <div class="modal-body text-center">
-                                        <h5>Yakin ingin menghapus?</h5>
-                                        <p class="text-muted">{{ $role->name }}</p>
-                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                        <button class="btn btn-danger">Hapus</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
 </div>
+
+{{-- //modal edit --}}
+@foreach($roles as $role)
+{{-- MODAL EDIT --}}
+<div class="modal fade" id="editModal{{ $role->id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form method="POST" action="{{ route('roles.update', $role->id) }}">
+                @csrf
+                @method('PUT')
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Role</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Nama Role</label>
+                        <input
+                            type="text"
+                            name="name"
+                            class="form-control"
+                            value="{{ $role->name }}"
+                            required
+                        >
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Deskripsi</label>
+                        <textarea
+                            name="description"
+                            class="form-control"
+                            rows="3"
+                        >{{ $role->description }}</textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                        Batal
+                    </button>
+                    <button type="submit" class="btn btn-warning">
+                        Update
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@endforeach
+
+
+@foreach ($roles as $role)
+{{-- MODAL DELETE --}}
+<div class="modal fade" id="deleteModal{{ $role->id }}" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <form method="POST" action="{{ route('roles.destroy', $role->id) }}">
+                @csrf
+                @method('DELETE')
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body text-center py-4">
+
+                    {{-- ICON BULAT --}}
+                    <div
+                        class="d-inline-flex align-items-center justify-content-center rounded-circle shadow bg-light bg-opacity-10 text-warning mb-3"
+                        style="width: 90px; height: 90px;">
+                        <i class="fas fa-question fs-1"></i>
+                    </div>
+
+                    <h5 class="mb-1">Hapus Role?</h5>
+                    <p class="text-muted mb-4">
+                        Apakah Anda yakin ingin menghapus role
+                        <strong>{{ $role->name }}</strong>?
+                    </p>
+
+                    <div class="d-flex justify-content-center gap-2">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                            Batal
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            Ya, Hapus
+                        </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+    
+@endforeach
 
 {{-- MODAL CREATE --}}
 <div class="modal fade" id="createModal">

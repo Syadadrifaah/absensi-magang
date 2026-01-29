@@ -80,6 +80,7 @@
                             <th>Jam Masuk</th>
                             <th>Jam Pulang</th>
                             <th>Status</th>
+                            <th>Keterangan</th>
                             <th width="120">Aksi</th>
                         </tr>
                     </thead>
@@ -107,6 +108,28 @@
                                     {{ $a->status }}
                                 </span>
                             </td>
+                            <td>
+                                @if($a->keterangan == 'Terlambat')
+                                    <span class="badge bg-warning fs-6 px-3 py-2 text-dark">
+                                        {{ $a->keterangan }}
+                                    </span>
+                                @elseif($a->keterangan == 'Tepat_Waktu')
+                                    <span class="badge bg-success fs-6 px-3 py-2">
+                                        Tepat Waktu     
+                                    </span>
+                                @elseif($a->keterangan == 'Pulang_Cepat')
+                                    <span class="badge bg-danger text-white fs-6 px-3 py-2">
+                                        Pulang Cepat     
+                                    </span>
+                                @elseif($a->keterangan == 'Terlambat_Pulang_Cepat')
+                                    <span class="badge bg-danger fs-6 px-3 py-2">
+                                        Terlambat & Pulang Cepat     
+                                    </span>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif      
+
+                            </td>
 
                             <td class="text-center">
                                 @if(auth()->user()->hasRole('Admin'))
@@ -116,6 +139,18 @@
                                         <i class="fas fa-pen"></i>
                                     </button>
                                 @endif
+                                @if(auth()->user()->hasRole('Admin'))
+                                    <button class="btn btn-sm btn-outline-danger btn-delete-absensi"
+                                        data-id="{{ $a->id }}"
+                                        data-nama="{{ $a->user->employee->name ?? $a->user->name }}"
+                                        data-tanggal="{{ \Carbon\Carbon::parse($a->tanggal)->format('d M Y') }}"
+                                        data-action="{{ route('absensi.destroy', $a->id) }}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteAbsensiModal">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                @endif
+
 
                                 <button class="btn btn-sm btn-outline-info"
                                     data-bs-toggle="modal"
@@ -125,159 +160,7 @@
                             </td>
                         </tr>
 
-                        {{-- ================= MODAL EDIT ================= --}}
-                        @foreach ($absensis as $a)
-                            <div class="modal fade"
-                                id="modalEdit{{ $a->id }}"
-                                tabindex="-1"
-                                aria-labelledby="modalEditLabel{{ $a->id }}"
-                                aria-hidden="true">
-
-                                <div class="modal-dialog modal-md modal-dialog-centered">
-                                    <div class="modal-content">
-
-                                        {{-- HEADER --}}
-                                        <div class="modal-header">
-                                            <h1 class="modal-title fs-5" id="modalEditLabel{{ $a->id }}">
-                                                Edit Absensi
-                                            </h1>
-                                            <button type="button"
-                                                    class="btn-close"
-                                                    data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-
-                                        {{-- FORM --}}
-                                        <form method="POST" action="{{ route('absensi.updatedataabsensi', $a->id) }}">
-                                            @csrf
-                                            @method('PUT')
-
-                                            {{-- BODY --}}
-                                            <div class="modal-body">
-
-                                                <div class="mb-3">
-                                                    <label class="form-label">Jam Masuk</label>
-                                                    <input type="time"
-                                                        name="jam_masuk"
-                                                        value="{{ $a->jam_masuk }}"
-                                                        class="form-control">
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label class="form-label">Jam Pulang</label>
-                                                    <input type="time"
-                                                        name="jam_pulang"
-                                                        value="{{ $a->jam_pulang }}"
-                                                        class="form-control">
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label class="form-label">Status</label>
-                                                    <select name="status" class="form-select">
-                                                        <option value="Hadir" {{ $a->status == 'Hadir' ? 'selected' : '' }}>Hadir</option>
-                                                        <option value="Izin" {{ $a->status == 'Izin' ? 'selected' : '' }}>Izin</option>
-                                                        <option value="Alpha" {{ $a->status == 'Alpha' ? 'selected' : '' }}>Alpha</option>
-                                                        <option value="Sakit" {{ $a->status == 'Sakit' ? 'selected' : '' }}>Sakit</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="mb-3">
-                                                    <label class="form-label">Keterangan</label>
-                                                    <select name="keterangan" id="" class="form-select">
-                                                        <option value="-" {{ $a->keterangan == '-' ? 'selected' : '' }}>-</option>
-                                                        <option value="Terlambat" {{ $a->keterangan == 'Terlambat' ? 'selected' : '' }}>Terlambat</option>
-                                                        <option value="Tepat_Waktu" {{ $a->keterangan == 'Tepat_Waktu' ? 'selected' : '' }}>Tepat Waktu</option>
-                                                        <option value="Pulang_Cepat" {{ $a->keterangan == 'Pulang_Cepat' ? 'selected' : '' }}>Pulang Cepat</option>
-                                                        <option value="Terlambat_Pulang_Cepat" {{ $a->keterangan == 'Terlambat_Pulang_Cepat' ? 'selected' : '' }}>Terlambat & Pulang Cepat</option>
-                                                    </select>
-                                                </div>
-
-                                            </div>
-
-                                            {{-- FOOTER --}}
-                                            <div class="modal-footer">
-                                                <button type="button"
-                                                        class="btn btn-secondary"
-                                                        data-bs-dismiss="modal">
-                                                    Close
-                                                </button>
-
-                                                <button type="submit"
-                                                        class="btn btn-primary">
-                                                    Save changes
-                                                </button>
-                                            </div>
-
-                                        </form>
-
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-
-                        @foreach ($absensis as $a)
-                        {{-- ================= MODAL DETAIL ================= --}}
-                        <div class="modal fade" id="modalDetail{{ $a->id }}">
-                            <div class="modal-dialog modal-lg modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h6 class="modal-title fw-semibold">
-                                            Detail Absensi
-                                        </h6>
-                                        <button class="btn-close"
-                                            data-bs-dismiss="modal"></button>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <p><strong>Pegawai:</strong>
-                                            {{ $a->user->employee->name ?? '-' }}</p>
-                                        <p><strong>Tanggal:</strong> {{ $a->tanggal }}</p>
-                                        <p><strong>Status:</strong> {{ $a->status }}</p>
-                                        <p><strong>Keterangan:</strong>
-                                            {{ $a->keterangan ?? '-' }}
-                                        </p>
-                                        <p><strong>Koordinat masuk:</strong>
-                                            {{ $a->koordinat_masuk ?? '-' }}
-                                        </p>
-                                        <p><strong>Koordinat pulang:</strong>
-                                            {{ $a->koordinat_pulang ?? '-' }}
-                                        </p>
-
-                                        <div class="row mt-3">
-                                            <div class="col-md-6 text-center">
-                                                <p class="fw-semibold">Foto Masuk</p>
-                                                @if($a->foto_masuk)
-                                                    <img src="{{ asset('storage/'.$a->foto_masuk) }}"
-                                                        class="img-fluid rounded shadow-sm">
-                                                @else
-                                                    <span class="text-muted">Tidak ada foto</span>
-                                                @endif
-                                            </div>
-
-                                            <div class="col-md-6 text-center">
-                                                <p class="fw-semibold">Foto Pulang</p>
-                                                @if($a->foto_pulang)
-                                                    <img src="{{ asset('storage/'.$a->foto_pulang) }}"
-                                                        class="img-fluid rounded shadow-sm">
-                                                @else
-                                                    <span class="text-muted">Tidak ada foto</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="modal-footer">
-                                        <button class="btn btn-secondary btn-sm"
-                                            data-bs-dismiss="modal">
-                                            Tutup
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                         @endforeach 
-                        {{-- ================================================= --}}
-
+                       
                         @empty  
                      <tr>
                             <td colspan="7"
@@ -291,6 +174,217 @@
             </div>
         </div>
 
+         {{-- ================= MODAL EDIT ================= --}}
+        @foreach ($absensis as $a)
+            <div class="modal fade"
+                id="modalEdit{{ $a->id }}"
+                tabindex="-1"
+                aria-labelledby="modalEditLabel{{ $a->id }}"
+                aria-hidden="true">
+
+                <div class="modal-dialog modal-md modal-dialog-centered">
+                    <div class="modal-content">
+
+                        {{-- HEADER --}}
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="modalEditLabel{{ $a->id }}">
+                                Edit Absensi
+                            </h1>
+                            <button type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+
+                        {{-- FORM --}}
+                        <form method="POST" action="{{ route('absensi.updatedataabsensi', $a->id) }}">
+                            @csrf
+                            @method('PUT')
+
+                            {{-- BODY --}}
+                            <div class="modal-body">
+
+                                <div class="mb-3">
+                                    <label class="form-label">Jam Masuk</label>
+                                    <input type="time"
+                                        name="jam_masuk"
+                                        value="{{ $a->jam_masuk }}"
+                                        class="form-control">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Jam Pulang</label>
+                                    <input type="time"
+                                        name="jam_pulang"
+                                        value="{{ $a->jam_pulang }}"
+                                        class="form-control">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Status</label>
+                                    <select name="status" class="form-select">
+                                        <option value="Hadir" {{ $a->status == 'Hadir' ? 'selected' : '' }}>Hadir</option>
+                                        <option value="Izin" {{ $a->status == 'Izin' ? 'selected' : '' }}>Izin</option>
+                                        <option value="Alpha" {{ $a->status == 'Alpha' ? 'selected' : '' }}>Alpha</option>
+                                        <option value="Sakit" {{ $a->status == 'Sakit' ? 'selected' : '' }}>Sakit</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label">Keterangan</label>
+                                    <select name="keterangan" id="" class="form-select">
+                                        <option value="-" {{ $a->keterangan == '-' ? 'selected' : '' }}>-</option>
+                                        <option value="Terlambat" {{ $a->keterangan == 'Terlambat' ? 'selected' : '' }}>Terlambat</option>
+                                        <option value="Tepat_Waktu" {{ $a->keterangan == 'Tepat_Waktu' ? 'selected' : '' }}>Tepat Waktu</option>
+                                        <option value="Pulang_Cepat" {{ $a->keterangan == 'Pulang_Cepat' ? 'selected' : '' }}>Pulang Cepat</option>
+                                        <option value="Terlambat_Pulang_Cepat" {{ $a->keterangan == 'Terlambat_Pulang_Cepat' ? 'selected' : '' }}>Terlambat & Pulang Cepat</option>
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            {{-- FOOTER --}}
+                            <div class="modal-footer">
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Close
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-primary">
+                                    Save changes
+                                </button>
+                            </div>
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        @endforeach
+
+        @foreach ($absensis as $a)
+        {{-- ================= MODAL DETAIL ================= --}}
+        <div class="modal fade" id="modalDetail{{ $a->id }}">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="modal-title fw-semibold">
+                            Detail Absensi
+                        </h6>
+                        <button class="btn-close"
+                            data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+                        <p><strong>Pegawai:</strong>
+                            {{ $a->user->employee->name ?? '-' }}</p>
+                        <p><strong>Tanggal:</strong> {{ $a->tanggal }}</p>
+                        <p><strong>Status:</strong> {{ $a->status }}</p>
+                        <p><strong>Keterangan:</strong>
+                            {{ $a->keterangan ?? '-' }}
+                        </p>
+                        <p><strong>Koordinat masuk:</strong>
+                            {{ $a->koordinat_masuk ?? '-' }}
+                        </p>
+                        <p><strong>Koordinat pulang:</strong>
+                            {{ $a->koordinat_pulang ?? '-' }}
+                        </p>
+
+                        <div class="row mt-3">
+                            <div class="col-md-6 text-center">
+                                <p class="fw-semibold">Foto Masuk</p>
+                                @if($a->foto_masuk)
+                                    <img src="{{ asset('storage/'.$a->foto_masuk) }}"
+                                        class="img-fluid rounded shadow-sm">
+                                @else
+                                    <span class="text-muted">Tidak ada foto</span>
+                                @endif
+                            </div>
+
+                            <div class="col-md-6 text-center">
+                                <p class="fw-semibold">Foto Pulang</p>
+                                @if($a->foto_pulang)
+                                    <img src="{{ asset('storage/'.$a->foto_pulang) }}"
+                                        class="img-fluid rounded shadow-sm">
+                                @else
+                                    <span class="text-muted">Tidak ada foto</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary btn-sm"
+                            data-bs-dismiss="modal">
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+            @endforeach 
+        {{-- ================================================= --}}
+
+        {{-- modal delete --}}
+
+        {{-- ================= MODAL DELETE ABSENSI ================= --}}
+        <div class="modal fade" id="deleteAbsensiModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+
+                    <form id="deleteAbsensiForm" method="POST" action="">
+                        @csrf
+                        @method('DELETE')
+
+                        {{-- HEADER --}}
+                        <div class="modal-header border-0">
+                            <button type="button"
+                                    class="btn-close ms-auto"
+                                    data-bs-dismiss="modal"></button>
+                        </div>
+
+                        {{-- BODY --}}
+                        <div class="modal-body text-center py-4">
+
+                            {{-- ICON BULAT --}}
+                            <div
+                                class="d-inline-flex align-items-center justify-content-center
+                                    rounded-circle shadow bg-light bg-opacity-10 text-danger mb-3"
+                                style="width: 90px; height: 90px;">
+                                <i class="fas fa-question fs-1"></i>
+                            </div>
+
+                            <h5 class="mb-1">Hapus Data Absensi?</h5>
+
+                            <p class="text-muted mb-4">
+                                Yakin ingin menghapus absensi
+                                <strong id="delete-nama">—</strong>
+                                <br>
+                                pada tanggal <strong id="delete-tanggal">—</strong> ?
+                            </p>
+
+                            <div class="d-flex justify-content-center gap-2">
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        data-bs-dismiss="modal">
+                                    Batal
+                                </button>
+
+                                <button type="submit"
+                                        class="btn btn-danger">
+                                    Ya, Hapus
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
 
         {{-- PAGINATION --}}
         <div class="card-footer bg-white">
@@ -298,4 +392,22 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteModal = document.getElementById('deleteAbsensiModal');
+    const deleteForm  = document.getElementById('deleteAbsensiForm');
+    const namaField   = document.getElementById('delete-nama');
+    const tanggalField= document.getElementById('delete-tanggal');
+
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+
+        deleteForm.action = button.dataset.action;
+        namaField.textContent = button.dataset.nama;
+        tanggalField.textContent = button.dataset.tanggal;
+    });
+});
+</script>
+
 @endsection

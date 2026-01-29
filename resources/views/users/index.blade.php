@@ -19,10 +19,6 @@
         </div>
 
         <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-
             <table class="table table-bordered align-middle">
                 <thead class="table-light">
                     <tr>
@@ -100,8 +96,8 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                        <button class="btn btn-warning">Update</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-warning">Update</button>
                                     </div>
                                 </div>
                             </form>
@@ -109,26 +105,56 @@
                     </div>
 
                     {{-- MODAL DELETE --}}
-                    <div class="modal fade" id="deleteModal{{ $user->id }}">
+                    <div class="modal fade" id="deleteModal{{ $user->id }}" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
-                            <form method="POST" action="{{ route('users.destroy', $user->id) }}">
-                                @csrf
-                                @method('DELETE')
-                                <div class="modal-content">
-                                    <div class="modal-body text-center">
-                                        <h5>Hapus User?</h5>
-                                        <p>{{ $user->name }}</p>
-                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                        <button class="btn btn-danger">Hapus</button>
+                            <div class="modal-content">
+
+                                <form method="POST" action="{{ route('users.destroy', $user->id) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <div class="modal-header border-0">
+                                        <button type="button" class="btn-close ms-auto" data-bs-dismiss="modal"></button>
                                     </div>
-                                </div>
-                            </form>
+                                    <div class="modal-body text-center py-4">
+
+                                        {{-- ICON BULAT --}}
+                                        <div
+                                            class="d-inline-flex align-items-center justify-content-center rounded-circle shadow bg-light bg-opacity-10 text-warning mb-3"
+                                            style="width: 90px; height: 90px;">
+                                            <i class="fas fa-question fs-1"></i>
+                                        </div>
+                                            
+                                        <h5 class="mb-1">Hapus User?</h5>
+
+                                        <p class="text-muted mb-4">
+                                            Apakah Anda yakin ingin menghapus user
+                                            <strong>{{ $user->name }}</strong>?
+                                        </p>
+
+                                        <div class="d-flex justify-content-center gap-2">
+                                            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                                                Batal
+                                            </button>
+                                            <button type="submit" class="btn btn-success">
+                                                Ya, Hapus
+                                            </button>
+                                        </div>
+
+                                    </div>
+
+                                </form>
+
+                            </div>
                         </div>
                     </div>
+
 
                     @endforeach
                 </tbody>
             </table>
+        </div>
+        <div class="card-footer bg-white">
+            {{ $users->links('pagination::bootstrap-5') }}
         </div>
     </div>
 </div>
