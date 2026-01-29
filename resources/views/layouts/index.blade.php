@@ -111,7 +111,7 @@
                         <div class="user-box">
                           <div class="avatar-lg">
                             <img
-                              src="assets/img/profile.jpg"
+                              src="{{ asset('assets/img/usernew.png') }}"
                               alt="image profile"
                               class="avatar-img rounded"
                             />
@@ -122,19 +122,19 @@
 
                             @if (Auth::user()->role_id == 1)
                               <a
-                                href="profile.html"
+                                href="#"
                                 class="btn btn-xs btn-success btn-sm"
                                 >Admin
                               </a>
                             @elseif (Auth::user()->role_id == 2)
                               <a
-                                href="profile.html"
+                                href="#"
                                 class="btn btn-xs btn-success btn-sm"
                                 >Kepala Balai
                               </a>
                             @else
                               <a
-                                href="profile.html"
+                                href="#"
                                 class="btn btn-xs btn-success btn-sm"
                                 >Pegawai
                               </a>
@@ -145,11 +145,11 @@
                         </div>
                       </li>
                       <li>
-                          <div class="dropdown-divider"></div>
+                          {{-- <div class="dropdown-divider"></div>
 
                           <a class="dropdown-item" href="#">
                               My Profile
-                          </a>
+                          </a> --}}
 
                           <div class="dropdown-divider"></div>
 
