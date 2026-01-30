@@ -46,7 +46,7 @@
 
                         <td>
                             <div class="fw-semibold">{{ $izin->user->name }}</div>
-                            <small class="text-muted">{{ $izin->user->email }}</small>
+                            <span class="badge bg-info text-white">{{ $izin->user->email }}</span>
                         </td>
 
                         <td class="text-center">

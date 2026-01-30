@@ -24,9 +24,12 @@
 
 
 <div class="container">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5 class="mb-0">Absensi & Logbook</h5>
-    </div>
+        <div class="mb-3">
+            <h4 class="fw-semibold mb-1">Absensi & Log Book</h4>
+            <small class="text-muted">
+                <a href="#">Dashboard</a> • Absensi & Log Book
+            </small>
+        </div>
 
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body">

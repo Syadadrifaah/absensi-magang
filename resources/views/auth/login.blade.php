@@ -241,6 +241,25 @@
             animation-delay: -1.5s;
         }
 
+        .login-link {
+            text-align: center;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .login-link a {
+            color: var(--secondary-blue);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .login-link a:hover {
+            color: var(--secondary-dark-blue);
+            text-decoration: underline;
+        }
         @keyframes logoFloat {
 
             0%,
@@ -839,7 +858,7 @@
                                 d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                        <input type="text" id="email" name="email" placeholder="Masukkan NIP atau email" required
+                        <input type="email" id="email" name="email" placeholder="Masukkan NIP atau email" required
                             autocomplete="username" value="{{ old('email') }}">
                         @error('email')
                             <div class="text-danger small">{{ $message }}</div>
@@ -906,6 +925,9 @@
                     </svg>
                     <span>Koneksi aman dengan enkripsi SSL 256-bit</span>
                 </div>
+                {{-- <div class="login-link">
+                    <p>Belum memiliki akun? <a href="{{ route('register') }}">Daftar di sini</a></p>
+                </div> --}}
             </form>
         </div>
     </div>

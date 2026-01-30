@@ -43,11 +43,11 @@ class EmployeeController extends Controller
     public function index(Request $request)
     {
         $users = User::all();
-        $catogories = KategoriEmployee::all();
+        $categories = KategoriEmployee::all();
         $roles = Role::orderBy('name')->get();
 
         // QUERY UTAMA
-        $query = Employee::with(['user.role', 'kategori']);
+        $query = Employee::with(['user.role', 'kategori','position:id,name,level']);
 
         // 🔍 SEARCH
         if ($request->filled('search')) {
@@ -64,9 +64,16 @@ class EmployeeController extends Controller
             });
         }
 
-        // 📄 PAGINATION (PAKAI QUERY YANG SAMA)
+        // PAGINATION (PAKAI QUERY YANG SAMA)
         $employees = $query
-            ->orderBy('position_id','asc')
+            ->join('positions', 'employees.position_id', '=', 'positions.id')
+            ->with([
+                'user.role',
+                'kategori',
+                'position:id,name,level'
+            ])
+            ->orderBy('positions.level','asc')
+            ->select('employees.*')
             ->paginate(10)
             ->withQueryString();
 
@@ -74,7 +81,7 @@ class EmployeeController extends Controller
             'employees',
             'roles',
             'users',
-            'catogories'
+            'categories'
         ));
     }
 

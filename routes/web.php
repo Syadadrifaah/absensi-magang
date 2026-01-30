@@ -15,9 +15,11 @@ use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\LogbookController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\KategoriEmployeeController;
+use App\Http\Controllers\PengaturanAbsensiController;
 use SebastianBergmann\CodeCoverage\Report\Xml\Report;
 
 
@@ -98,6 +100,16 @@ Route::middleware(['auth','role:Admin'])->group(function () {
     Route::put('/employees/update/{id}', [EmployeeController::class, 'update'])->name('employees.update');
     Route::delete('/employees/delete/{id}', [EmployeeController::class, 'destroy'])->name('employees.destroy');
 
+    // pengaturan absensi
+    Route::get('/pengaturan-absensi', [PengaturanAbsensiController::class, 'index'])->name('pengaturan.absensi.index');
+
+    Route::post('/pengaturan-absensi', [PengaturanAbsensiController::class, 'store'])->name('pengaturan.absensi.store');
+
+    Route::put('/pengaturan-absensi/{id}', [PengaturanAbsensiController::class, 'update'])->name('pengaturan.absensi.update');
+
+    Route::delete('/pengaturan-absensi/{id}', [PengaturanAbsensiController::class, 'destroy'])->name('pengaturan.absensi.destroy');
+
+    Route::patch('/pengaturan-absensi-toggle/{id}', [PengaturanAbsensiController::class, 'toggle'])->name('pengaturan.absensi.toggle');
 });
 
 Route::middleware(['auth','role:Kepala Balai,pegawai,Admin'])->group(function () {

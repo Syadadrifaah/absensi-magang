@@ -96,33 +96,33 @@
                                 <div class="fw-semibold">
                                     {{ $a->user->employee->name ?? $a->user->name }}
                                 </div>
-                                <small class="text-muted">{{ $a->user->email }}</small>
+                                <small class="text-muted"><span class="badge bg-info text-white">{{ $a->user->email }}</span></small>
                             </td>
 
                             <td class="text-center">{{ $a->jam_masuk ?? '-' }}</td>
                             <td class="text-center">{{ $a->jam_pulang ?? '-' }}</td>
 
                             <td class="text-center">
-                                <span class="badge fs-6 px-3 py-2
+                                <span class="badge fs-6 
                                     {{ $a->status == 'Hadir' ? 'bg-success' : 'bg-danger' }}">
                                     {{ $a->status }}
                                 </span>
                             </td>
                             <td>
                                 @if($a->keterangan == 'Terlambat')
-                                    <span class="badge bg-warning fs-6 px-3 py-2 text-dark">
+                                    <span class="badge bg-warning fs-6 text-dark">
                                         {{ $a->keterangan }}
                                     </span>
                                 @elseif($a->keterangan == 'Tepat_Waktu')
-                                    <span class="badge bg-success fs-6 px-3 py-2">
+                                    <span class="badge bg-success fs-6 ">
                                         Tepat Waktu     
                                     </span>
                                 @elseif($a->keterangan == 'Pulang_Cepat')
-                                    <span class="badge bg-danger text-white fs-6 px-3 py-2">
+                                    <span class="badge bg-danger fs-6 text-white ">
                                         Pulang Cepat     
                                     </span>
                                 @elseif($a->keterangan == 'Terlambat_Pulang_Cepat')
-                                    <span class="badge bg-danger fs-6 px-3 py-2">
+                                    <span class="badge bg-danger fs-6 ">
                                         Terlambat & Pulang Cepat     
                                     </span>
                                 @else

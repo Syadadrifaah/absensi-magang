@@ -34,25 +34,29 @@
                     <thead class="table-light">
                         <tr>
                             <th>#</th>
+                            <th>Tanggal Log</th>
                             <th>User</th>
-                            <th>Email</th>
-                            <th>NIP</th>
                             <th>Aksi</th>
                             <th>Deskripsi</th>
                             <th>IP</th>
                             <th>User Agent</th>
-                            <th>Tanggal Log</th>
-                            <th width="8%">Edit</th>
+                            {{-- <th width="8%">Edit</th> --}}
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($logs as $log)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $log->user->name ?? '-' }}</td>
-                            <td class="fw-semibold">{{ $log->user->email ?? '-' }}</td>
                             <td>
-                                <span class="badge bg-light text-dark">
+                                <h5 class="text-log-date">
+                                    {{ $log->created_at->format('d M Y') }}<br>
+                                    {{ $log->created_at->format('H:i') }}
+                                <h5>
+                            </td>
+                            <td class="fw-semibold">
+                                {{ $log->user->name ?? '-' }}
+                                <span class="badge bg-info text-white">{{ $log->user->email ?? '-' }}</span>
+                                <span class="badge bg-success text-white">
                                     {{ $log->user->employee->nip ?? '-' }}
                                 </span>
                             </td>
@@ -83,22 +87,13 @@
                                 {{ $log->user_agent }}
                             </td>
 
-
-
-                            <td>
-                                <small class="text-log-date">
-                                    {{ $log->created_at->format('d M Y') }}<br>
-                                    {{ $log->created_at->format('H:i') }}
-                                </small>
-                            </td>
-
-                            <td class="text-center">
+                            {{-- <td class="text-center">
                                 <button class="btn btn-sm btn-warning"
                                     data-bs-toggle="modal"
                                     data-bs-target="#editModal{{ $log->id }}">
                                     Edit
                                 </button>
-                            </td>
+                            </td> --}}
                         </tr>
 
                         {{-- MODAL UPDATE --}}

@@ -357,7 +357,7 @@
                     <select name="kategori_id"
                             class="form-select @error('kategori_id') is-invalid @enderror">
                         <option value="">-- Tidak ada --</option>
-                        @foreach($catogories as $c)
+                        @foreach($categories as $c)
                             <option value="{{ $c->id }}"
                                 {{ old('kategori_id') == $c->id ? 'selected' : '' }}>
                                 {{ $c->nama_kategori }}
@@ -505,7 +505,7 @@
                         <select name="kategori_id"
                                 class="form-select @error('kategori_id') is-invalid @enderror">
                             <option value="">-- Tidak ada --</option>
-                            @foreach($catogories as $c)
+                            @foreach($categories as $c)
                                 <option value="{{ $c->id }}"
                                     {{ old('kategori_id', $e->kategori_id) == $c->id ? 'selected' : '' }}>
                                     {{ $c->nama_kategori }}

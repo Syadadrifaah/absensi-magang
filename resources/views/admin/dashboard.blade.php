@@ -67,7 +67,7 @@
                 <div
                     class="icon-big text-center icon-success bubble-shadow-small"
                 >
-                    <i class="fas fa-luggage-cart"></i>
+                    <i class="fas fa-calendar-times"></i>
                 </div>
                 </div>
                 <div class="col col-stats ms-3 ms-sm-0">
@@ -88,7 +88,7 @@
                 <div
                     class="icon-big text-center icon-secondary bubble-shadow-small"
                 >
-                    <i class="far fa-check-circle"></i>
+                    <i class="far fa-user"></i>
                 </div>
                 </div>
                 <div class="col col-stats ms-3 ms-sm-0">
@@ -122,7 +122,7 @@
         <div class="col-md-6">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title">Grafik Absensi Per Bulan</div>
+                    <div class="card-title">Grafik Absensi Per Bulan (Tahun 2026)</div>
                 </div>
                 <div class="card-body">
                     <div class="chart-container">

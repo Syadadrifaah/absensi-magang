@@ -60,7 +60,7 @@
             <!-- Logo Header -->
             <div class="logo-header" data-background-color="dark">
               <a href="#" class="logo">
-                <img src="{{ asset('assets/img/kaiadmin/Lambang_kota_kendari.png') }}" alt="navbar brand" class="navbar-brand" height="100" style="width: 50px; "/>
+                {{-- <img src="{{ asset('assets/img/kaiadmin/Lambang_kota_kendari.png') }}" alt="navbar brand" class="navbar-brand" height="100" style="width: 50px; "/> --}}
               </a>
               <div class="nav-toggle">
                 <button class="btn btn-toggle toggle-sidebar">

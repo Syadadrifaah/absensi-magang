@@ -91,6 +91,13 @@
                     {{-- <span class="badge badge-secondary">1</span> --}}
                   </a>
                 </li>
+                <li class="nav-item {{Request::is('pengaturan-absensi') ? 'active' : ''}}">
+                  <a href="{{route('pengaturan.absensi.index')}}">
+                    <i class="fas fa-cog"></i>
+                    <p>Pengaturan Absensi</p>
+                    {{-- <span class="badge badge-secondary">1</span> --}}
+                  </a>
+                </li>
               @endif
 
               @if(auth()->user()->hasRole(['Kepala Balai','pegawai']))
