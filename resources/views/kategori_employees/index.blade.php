@@ -20,45 +20,47 @@
         </div>
 
         <div class="card-body p-0">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-light">
-                    <tr>
-                        <th width="50">#</th>
-                        <th>Nama Kategori</th>
-                        <th width="120" class="text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($kategoriEmployees as $i => $k)
-                    <tr>
-                        <td>{{ $kategoriEmployees->firstItem() + $i }}</td>
-                        <td>{{ $k->nama_kategori }}</td>
-                        <td class="text-center">
-                            <button class="btn btn-sm btn-outline-warning"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalEdit{{ $k->id }}">
-                                <i class="fas fa-pen"></i>
-                            </button>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="50">#</th>
+                            <th>Nama Kategori</th>
+                            <th width="120" class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($kategoriEmployees as $i => $k)
+                        <tr>
+                            <td>{{ $kategoriEmployees->firstItem() + $i }}</td>
+                            <td>{{ $k->nama_kategori }}</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-warning"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalEdit{{ $k->id }}">
+                                    <i class="fas fa-pen"></i>
+                                </button>
 
-                            <button class="btn btn-sm btn-outline-danger"
-                                data-bs-toggle="modal"
-                                data-bs-target="#modalDelete{{ $k->id }}">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
+                                <button class="btn btn-sm btn-outline-danger"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#modalDelete{{ $k->id }}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
 
-                    
+                        
 
-                    @empty
-                    <tr>
-                        <td colspan="3" class="text-center text-muted py-4">
-                            Data kategori belum tersedia
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                        @empty
+                        <tr>
+                            <td colspan="3" class="text-center text-muted py-4">
+                                Data kategori belum tersedia
+                            </td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="card-footer bg-white">

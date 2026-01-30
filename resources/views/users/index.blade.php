@@ -19,7 +19,8 @@
         </div>
 
         <div class="card-body">
-            <table class="table table-bordered align-middle">
+            <div class="table-responsive">
+                <table class="table align-middle table-hover">
                 <thead class="table-light">
                     <tr>
                         <th>#</th>
@@ -152,6 +153,8 @@
                     @endforeach
                 </tbody>
             </table>
+            </div>
+            
         </div>
         <div class="card-footer bg-white">
             {{ $users->links('pagination::bootstrap-5') }}

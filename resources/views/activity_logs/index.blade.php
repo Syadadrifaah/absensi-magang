@@ -30,7 +30,7 @@
             @endif
 
             <div class="table-responsive">
-                <table class="table table-hover table-bordered align-middle">
+                <table class="table table-hover table-responsive align-middle">
                     <thead class="table-light">
                         <tr>
                             <th>#</th>

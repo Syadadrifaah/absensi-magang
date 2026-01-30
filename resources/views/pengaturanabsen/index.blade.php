@@ -39,105 +39,107 @@
                     + Tambah Jam Absensi
                 </button>
             </div>
-            <table class="table table-hover align-middle text-center table-responsive">
-                <thead class="table-light">
-                    <tr>
-                        <th>No</th>
-                        <th>Kategori</th>
-                        <th>Jam Masuk</th>
-                        <th>Jam Pulang</th>
-                        <th>Status</th>
-                        <th></th>
-                        <th width="260" class="text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($data as $i => $row)
-                    <tr>
-                        <td>{{ $i + 1 }}</td>
-                        <td>{{ $row->nama }}</td>
-                        <td>
-                            {{ $row->jam_masuk_mulai }} - {{ $row->jam_masuk_selesai }}
-                        </td>
-                        <td>
-                            {{ $row->jam_pulang_mulai }} - {{ $row->jam_pulang_selesai }}
-                        </td>
-                        <td>
-                            @if($row->aktif)
-                                <span class="badge bg-success px-3 py-2">AKTIF</span>
-                            @else
-                                <span class="badge bg-danger px-3 py-2">NON AKTIF</span>
-                            @endif
-                        </td>
-                        <td class="text-center align-middle">
-                            {{-- Toggle Aktif --}}
+            <div class="table-responsive">
+                <table class="table table-hover align-middle text-center table-responsive">
+                    <thead class="table-light">
+                        <tr>
+                            <th>No</th>
+                            <th>Kategori</th>
+                            <th>Jam Masuk</th>
+                            <th>Jam Pulang</th>
+                            <th>Status</th>
+                            <th></th>
+                            <th width="260" class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($data as $i => $row)
+                        <tr>
+                            <td>{{ $i + 1 }}</td>
+                            <td>{{ $row->nama }}</td>
+                            <td>
+                                {{ $row->jam_masuk_mulai }} - {{ $row->jam_masuk_selesai }}
+                            </td>
+                            <td>
+                                {{ $row->jam_pulang_mulai }} - {{ $row->jam_pulang_selesai }}
+                            </td>
+                            <td>
+                                @if($row->aktif)
+                                    <span class="badge bg-success px-3 py-2">AKTIF</span>
+                                @else
+                                    <span class="badge bg-danger px-3 py-2">NON AKTIF</span>
+                                @endif
+                            </td>
+                            <td class="text-center align-middle">
+                                {{-- Toggle Aktif --}}
 
-                            <form action="{{ route('pengaturan.absensi.toggle', $row->id) }}"
-                                method="POST"
-                                class="d-flex justify-content-center">
-                                @csrf
-                                @method('PATCH')
-
-                                <div class="form-check form-switch switch-lg">
-                                    <input class="form-check-input"
-                                        type="checkbox"
-                                        onchange="this.form.submit()"
-                                        {{ $row->aktif ? 'checked' : '' }}>
-                                </div>
-                            </form>
-                        </td>
-                        <td class="text-center justify-content-center">
-                            {{-- Edit --}}
-                            <button class="btn btn-info btn-sm text-white"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalEdit{{ $row->id }}">
-                                Edit
-                            </button>
-                            <button class="btn btn-danger btn-sm text-white"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#modalDelete{{ $row->id }}">
-                                Hapus
-                            </button>
-                        </td>
-                    </tr>
-
-                    
-
-                    <div class="modal fade" id="modalDelete{{ $row->id }}" tabindex="-1">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-
-                                <form action="{{ route('pengaturan.absensi.destroy', $row->id) }}" method="POST">
+                                <form action="{{ route('pengaturan.absensi.toggle', $row->id) }}"
+                                    method="POST"
+                                    class="d-flex justify-content-center">
                                     @csrf
-                                    @method('DELETE')
+                                    @method('PATCH')
 
-                                    <div class="modal-header">
-                                        <h5 class="modal-title text-danger">Hapus Jam Absensi</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    <div class="form-check form-switch switch-lg">
+                                        <input class="form-check-input"
+                                            type="checkbox"
+                                            onchange="this.form.submit()"
+                                            {{ $row->aktif ? 'checked' : '' }}>
                                     </div>
-
-                                    <div class="modal-body">
-                                        <p>Yakin ingin menghapus jam absensi:</p>
-                                        <strong>{{ $row->nama }}</strong> ?
-                                    </div>
-
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                                        <button type="submit" class="btn btn-danger">Ya, Hapus</button>
-                                    </div>
-
                                 </form>
+                            </td>
+                            <td class="text-center justify-content-center">
+                                {{-- Edit --}}
+                                <button class="btn btn-info btn-sm text-white"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEdit{{ $row->id }}">
+                                    Edit
+                                </button>
+                                <button class="btn btn-danger btn-sm text-white"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalDelete{{ $row->id }}">
+                                    Hapus
+                                </button>
+                            </td>
+                        </tr>
+
+                        
+
+                        <div class="modal fade" id="modalDelete{{ $row->id }}" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+
+                                    <form action="{{ route('pengaturan.absensi.destroy', $row->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+
+                                        <div class="modal-header">
+                                            <h5 class="modal-title text-danger">Hapus Jam Absensi</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            <p>Yakin ingin menghapus jam absensi:</p>
+                                            <strong>{{ $row->nama }}</strong> ?
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                            <button type="submit" class="btn btn-danger">Ya, Hapus</button>
+                                        </div>
+
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-muted">Belum ada data jam absensi</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                        @empty
+                        <tr>
+                            <td colspan="5" class="text-muted">Belum ada data jam absensi</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

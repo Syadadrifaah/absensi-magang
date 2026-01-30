@@ -19,39 +19,40 @@
         </div>
 
         <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="5%">#</th>
+                            <th>Nama Role</th>
+                            <th>Deskripsi</th>
+                            <th width="20%" class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($roles as $role)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $role->name }}</td>
+                            <td>{{ $role->description }}</td>
+                            <td class="text-center">
+                                <button class="btn btn-warning btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#editModal{{ $role->id }}">
+                                    Edit
+                                </button>
 
-            <table class="table table-bordered table-hover align-middle">
-                <thead class="table-light">
-                    <tr>
-                        <th width="5%">#</th>
-                        <th>Nama Role</th>
-                        <th>Deskripsi</th>
-                        <th width="20%" class="text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($roles as $role)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $role->name }}</td>
-                        <td>{{ $role->description }}</td>
-                        <td class="text-center">
-                            <button class="btn btn-warning btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#editModal{{ $role->id }}">
-                                Edit
-                            </button>
-
-                            <button class="btn btn-danger btn-sm"
-                                data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{ $role->id }}">
-                                Hapus
-                            </button>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                                <button class="btn btn-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ $role->id }}">
+                                    Hapus
+                                </button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
